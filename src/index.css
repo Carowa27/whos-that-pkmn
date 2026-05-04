@@ -173,10 +173,10 @@ button:disabled {
 #mystery {
   --pkmn-image-filter: var(--pkmn-image-guess);
   filter: var(--pkmn-image-filter);
-  transition: filter 0.5s ease;
 }
 #mystery.revealed {
   --pkmn-image-filter: var(--pkmn-image-color);
+  transition: filter 0.5s ease;
 }
 input[type="radio"] {
   display: none;

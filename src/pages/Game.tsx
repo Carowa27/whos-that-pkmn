@@ -21,8 +21,6 @@ export const Game = () => {
       : gameCriteria?.generation?.replace("gen", "");
 
   useEffect(() => {
-    console.log("in useeffect");
-    let randomNrArr = [];
     const getPkmnFromCorrectGen = async () => {
       setReveal(false);
       setGuess("");
@@ -30,20 +28,26 @@ export const Game = () => {
       let highest = 1025;
       if (pkmnGen !== "nat") {
         const pkmnFromGen = await getPkmnFromGeneration(pkmnGen);
-        const ids = pkmnFromGen.map((p) => {
-          const match = p.url.match(/pokemon-species\/(\d+)\//);
-          return Number(match[1]);
-        });
+        const ids = pkmnFromGen
+          .map((p) => {
+            const match = p.url.match(/pokemon-species\/(\d+)\//);
+            return match ? Number(match[1]) : null;
+          })
+          .filter(Boolean);
 
         lowest = Math.min(...ids);
         highest = Math.max(...ids);
       }
 
-      if (startNewGame === true) {
-        randomNrArr = Array.from(
-          { length: 3 },
-          () => Math.floor(Math.random() * (highest - lowest + 1)) + lowest,
-        ).filter((id) => id !== correctPkmn?.id);
+      const randomNrArr: number[] = [];
+
+      while (randomNrArr.length < 3) {
+        const rand =
+          Math.floor(Math.random() * (highest - lowest + 1)) + lowest;
+
+        if (rand !== correctPkmn?.id && !randomNrArr.includes(rand)) {
+          randomNrArr.push(rand);
+        }
       }
 
       const [p0, p1, p2] = await Promise.all([
@@ -51,6 +55,7 @@ export const Game = () => {
         getSpecificPkmn(randomNrArr[1]),
         getSpecificPkmn(randomNrArr[2]),
       ]);
+
       const correct = p1;
       setCorrectPkmn(correct);
       const answers = [p0, p1, p2];
@@ -60,24 +65,29 @@ export const Game = () => {
       setPkmnArr(answers);
       setStartNewGame(false);
     };
-    console.log(randomNrArr);
-
-    getPkmnFromCorrectGen();
+    if (startNewGame) {
+      getPkmnFromCorrectGen();
+    }
   }, [pkmnGen, startNewGame]);
 
   const handleGuess = (e) => {
     setReveal(true);
     console.log(e.target.value);
-    if (e.target.value === correctPkmn.pkmnName) {
-      setGuess("correct");
+    if (gameCriteria.pkmnAnswer === "multipleChoices") {
+      if (correctPkmn && e.target.value === correctPkmn.pkmnName) {
+        setGuess("correct");
+      } else {
+        setGuess("wrong");
+      }
     } else {
-      setGuess("wrong");
+      console.log(e.target.value);
     }
   };
+  // console.log("guess", guess, "pkmnArr", pkmnArr, "correctPkmn", correctPkmn);
   return (
     <>
       <h1>Who's that Pkmn?</h1>
-      {guess === "correct" && (
+      {guess === "correct" && correctPkmn && (
         <h2>
           <span id="correct">Correct!</span> It is{" "}
           {correctPkmn.pkmnName.charAt(0).toUpperCase() +
@@ -85,7 +95,7 @@ export const Game = () => {
           !
         </h2>
       )}
-      {guess === "wrong" && (
+      {guess === "wrong" && correctPkmn && (
         <h2>
           <span id="wrong">Wrong!</span> It is{" "}
           {correctPkmn.pkmnName.charAt(0).toUpperCase() +
@@ -93,7 +103,7 @@ export const Game = () => {
           !
         </h2>
       )}
-      {pkmnArr !== undefined && correctPkmn !== undefined && (
+      {pkmnArr.length !== 0 && correctPkmn !== undefined && (
         <>
           <PkmnClue
             typeOfClue={gameCriteria.pkmnClue}

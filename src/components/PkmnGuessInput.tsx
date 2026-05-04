@@ -28,7 +28,13 @@ export const PkmnGuessInput = ({
           ))}
         </form>
       ) : (
-        <p>textInput</p>
+        <form id="pkmn-guess-form" onChange={(e) => handleGuess(e)}>
+          <input
+            type="text"
+            name="pkmn-guess-text-input"
+            id="pkmn-guess-text-input"
+          />
+        </form>
       )}
     </>
   );
