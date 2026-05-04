@@ -33,7 +33,10 @@ export const PkmnClue = ({ typeOfClue, pkmn, reveal }: IPkmnClueProps) => {
       {typeOfClue === "img" ? (
         <Pkmn pkmn={pkmn} reveal={reveal} />
       ) : (
-        <p dangerouslySetInnerHTML={{ __html: textTrim(dexEntry) }} />
+        <p
+          id="dex-entry"
+          dangerouslySetInnerHTML={{ __html: textTrim(dexEntry) }}
+        />
       )}
     </div>
   );
