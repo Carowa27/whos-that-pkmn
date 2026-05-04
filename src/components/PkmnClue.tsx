@@ -1,9 +1,18 @@
+import type { pkmn } from "../types/pkmn";
 import { Pkmn } from "./Pkmn";
 
-export const PkmnClue = () => {
+interface IPkmnClueProps {
+  typeOfClue: "img" | "dexEntry";
+  pkmn: pkmn;
+}
+
+export const PkmnClue = ({ typeOfClue, pkmn }: IPkmnClueProps) => {
+  // console.log(typeOfClue, pkmn);
+
   return (
     <>
-      PkmnClue: <Pkmn /> or DexEntry
+      <h4>PkmnClue:</h4>
+      {typeOfClue === "img" ? <Pkmn pkmn={pkmn} /> : <p> DexEntry</p>}
     </>
   );
 };
