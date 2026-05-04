@@ -3,20 +3,27 @@ import type { pkmn } from "../types/pkmn";
 interface IPkmnGuessProps {
   typeOfAnswer: "multipleChoices" | "textInput";
   pkmnArr: pkmn[];
+  handleGuess: (e) => void;
 }
 
-export const PkmnGuessInput = ({ typeOfAnswer, pkmnArr }: IPkmnGuessProps) => {
-  // console.log(typeOfAnswer, pkmnArr);
-
+export const PkmnGuessInput = ({
+  typeOfAnswer,
+  pkmnArr,
+  handleGuess,
+}: IPkmnGuessProps) => {
   return (
     <>
-      <h4>PkmnGuessInput</h4>
       {typeOfAnswer === "multipleChoices" ? (
-        <form>
+        <form id="pkmn-guess-form" onChange={(e) => handleGuess(e)}>
           {pkmnArr.map((p) => (
-            <label key={p.pkmnName}>
-              <input type="radio" name="pokemon" value={p.pkmnName} />
-              {p.pkmnName}
+            <label key={p.pkmnName} htmlFor={p.pkmnName}>
+              <input
+                type="radio"
+                name="pokemon"
+                value={p.pkmnName}
+                id={p.pkmnName}
+              />
+              {p.pkmnName.charAt(0).toUpperCase() + p.pkmnName.slice(1)}
             </label>
           ))}
         </form>

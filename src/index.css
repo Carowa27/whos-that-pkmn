@@ -15,6 +15,9 @@
   --heading: system-ui, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
+  --pkmn-image-color: brightness(1);
+  --pkmn-image-guess: brightness(0);
+
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
   color-scheme: light dark;
@@ -43,6 +46,9 @@
     --social-bg: rgba(47, 48, 58, 0.5);
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+
+    --pkmn-image-color: contrast(1);
+    --pkmn-image-guess: contrast(0);
   }
 
   #social .button-icon {
@@ -111,7 +117,7 @@ code {
 nav {
   height: 72px;
   width: 100%;
-  background: blue;
+  background: var(--border);
   z-index: 100;
   bottom: 0;
   position: fixed;
@@ -128,4 +134,46 @@ nav {
 }
 a {
   text-decoration: none;
+  color: inherit;
+}
+.pkmn-guess-img {
+  max-height: 50vh;
+  max-width: 100%;
+  height: auto;
+  width: auto;
+  object-fit: contain;
+}
+#mystery {
+  --pkmn-image-filter: var(--pkmn-image-guess);
+  filter: var(--pkmn-image-filter);
+  transition: filter 0.5s ease;
+}
+#mystery.revealed {
+  --pkmn-image-filter: var(--pkmn-image-color);
+}
+input[type="radio"] {
+  display: none;
+}
+#pkmn-guess-form {
+  display: flex;
+  justify-content: space-evenly;
+}
+#pkmn-guess-form label {
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+}
+#pkmn-guess-form label:has(input[type="radio"]:checked) {
+  background-color: var(--accent-border);
+}
+#correct {
+  color: green;
+}
+#wrong {
+  color: red;
+}
+
+#new-game-btn-section {
+  margin-top: 4px;
+  display: flex;
+  justify-content: space-evenly;
 }

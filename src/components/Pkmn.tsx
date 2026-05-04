@@ -2,13 +2,16 @@ import type { pkmn } from "../types/pkmn";
 
 interface IPkmnProps {
   pkmn: pkmn;
+  reveal: boolean;
 }
-export const Pkmn = ({ pkmn }: IPkmnProps) => {
+export const Pkmn = ({ pkmn, reveal }: IPkmnProps) => {
   return (
     <>
       <img
-        src={pkmn.sprites.other["official-artwork"].front_default}
+        id="mystery"
+        className={`pkmn-guess-img ${reveal === true ? "revealed" : ""}`}
         alt={"guess the pkmn image"}
+        src={pkmn.sprites.other["official-artwork"].front_default}
         srcSet={pkmn.sprites.other.home.front_default}
       />
     </>

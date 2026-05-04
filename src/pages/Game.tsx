@@ -1,16 +1,19 @@
 import { useLocation } from "react-router-dom";
 import { PkmnClue } from "../components/PkmnClue";
 import { PkmnGuessInput } from "../components/PkmnGuessInput";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { getPkmnFromGeneration, getSpecificPkmn } from "../api/getPkmn";
 import type { pkmn } from "../types/pkmn";
+import { NewGameBtns } from "../components/NewGameBtns";
 
 export const Game = () => {
   const location = useLocation();
-  const numbersRef = useRef(null);
   const [correctPkmn, setCorrectPkmn] = useState<pkmn>();
   const [pkmnArr, setPkmnArr] = useState<pkmn[]>([]);
   const { gameCriteria } = location.state || {};
+  const [reveal, setReveal] = useState(false);
+  const [guess, setGuess] = useState("");
+  const [startNewGame, setStartNewGame] = useState(false);
 
   const pkmnGen =
     gameCriteria?.generation === "nat"
@@ -19,7 +22,11 @@ export const Game = () => {
 
   useEffect(() => {
     console.log("in useeffect");
+    let randomNrArr = [];
     const getPkmnFromCorrectGen = async () => {
+      setReveal(false);
+      setGuess("");
+      setStartNewGame(false);
       let lowest = 1;
       let highest = 1025;
       if (pkmnGen !== "nat") {
@@ -32,13 +39,12 @@ export const Game = () => {
         lowest = Math.min(...ids);
         highest = Math.max(...ids);
       }
-      if (!numbersRef.current && lowest != null && highest != null) {
-        numbersRef.current = Array.from(
+      if (startNewGame === true) {
+        randomNrArr = Array.from(
           { length: 3 },
           () => Math.floor(Math.random() * (highest - lowest + 1)) + lowest,
         );
       }
-      const randomNrArr = numbersRef.current;
 
       const [p0, p1, p2] = await Promise.all([
         getSpecificPkmn(randomNrArr[0]),
@@ -54,18 +60,52 @@ export const Game = () => {
       setPkmnArr(answers);
     };
     getPkmnFromCorrectGen();
-  }, [pkmnGen]);
+  }, [pkmnGen, startNewGame]);
 
+  const handleGuess = (e) => {
+    setReveal(true);
+    console.log(e.target.value);
+    if (e.target.value === correctPkmn.pkmnName) {
+      setGuess("correct");
+    } else {
+      setGuess("wrong");
+    }
+  };
   return (
     <>
-      <h2>Who's that Pkmn?</h2>
+      <h1>Who's that Pkmn?</h1>
+      {guess === "correct" && (
+        <h2>
+          <span id="correct">Correct!</span> It is{" "}
+          {correctPkmn.pkmnName.charAt(0).toUpperCase() +
+            correctPkmn.pkmnName.slice(1)}
+          !
+        </h2>
+      )}
+      {guess === "wrong" && (
+        <h2>
+          <span id="wrong">Wrong!</span> It is{" "}
+          {correctPkmn.pkmnName.charAt(0).toUpperCase() +
+            correctPkmn.pkmnName.slice(1)}
+          !
+        </h2>
+      )}
       {pkmnArr !== undefined && correctPkmn !== undefined && (
         <>
-          <PkmnClue typeOfClue={gameCriteria.pkmnClue} pkmn={correctPkmn} />
-          <PkmnGuessInput
-            typeOfAnswer={gameCriteria.pkmnAnswer}
-            pkmnArr={pkmnArr}
+          <PkmnClue
+            typeOfClue={gameCriteria.pkmnClue}
+            pkmn={correctPkmn}
+            reveal={reveal}
           />
+          {guess === "" ? (
+            <PkmnGuessInput
+              typeOfAnswer={gameCriteria.pkmnAnswer}
+              pkmnArr={pkmnArr}
+              handleGuess={(e) => handleGuess(e)}
+            />
+          ) : (
+            <NewGameBtns startNewGame={() => setStartNewGame(true)} />
+          )}
         </>
       )}
     </>
