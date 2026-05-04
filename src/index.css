@@ -70,6 +70,7 @@ h2 {
   font-family: var(--heading);
   font-weight: 500;
   color: var(--text-h);
+  text-align: center;
 }
 
 h1 {
@@ -109,14 +110,16 @@ code {
   background: var(--code-bg);
 }
 .page-wrapper {
-  min-height: calc(100vh - 72px);
+  min-height: calc(100vh - 80px);
+  margin-bottom: 80px;
+  padding-top: 4rem;
   min-width: 300px;
   max-width: 1500px;
-  padding: 0 1rem;
+  padding: 4rem 1rem 0 1rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
-  outline: #6b6375 solid 2px;
+  gap: 4rem;
+  /* outline: #6b6375 solid 2px; */
 }
 nav {
   height: 72px;
@@ -155,8 +158,10 @@ option {
 button,
 .button {
   border: 1px solid var(--border);
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.8rem;
   background-color: var(--accent-bg);
+  border-radius: 0.5rem;
+  margin: 6px;
 }
 .button:has(input[type="radio"]:checked) {
   background-color: var(--accent-border);
@@ -186,6 +191,7 @@ input[type="radio"] {
 #pkmn-guess-form {
   display: flex;
   justify-content: space-evenly;
+  /* gap: 12px; */
 }
 /* #pkmn-guess-form label {
   border: 1px solid var(--border);
@@ -194,6 +200,12 @@ input[type="radio"] {
 /* #pkmn-guess-form label:has(input[type="radio"]:checked) {
   background-color: var(--accent-border);
 } */
+#game-header {
+  height: 120px;
+}
+.guess-header {
+  text-align: center;
+}
 #correct {
   color: green;
 }
@@ -224,5 +236,8 @@ input[type="radio"] {
   justify-content: space-evenly;
 }
 #dex-entry {
-  padding-left: 1rem;
+  padding: 0 1rem;
+  font-size: medium;
+  text-align: justify;
+  line-height: 1.6;
 }

@@ -102,23 +102,27 @@ export const Game = () => {
   // console.log("guess", guess, "pkmnArr", pkmnArr, "correctPkmn", correctPkmn);
   return (
     <>
-      <h1>Who's that Pkmn?</h1>
-      {guess === "correct" && correctPkmn && (
-        <h2>
-          <span id="correct">Correct!</span> It is{" "}
-          {correctPkmn.pkmnName.charAt(0).toUpperCase() +
-            correctPkmn.pkmnName.slice(1)}
-          !
-        </h2>
-      )}
-      {guess === "wrong" && correctPkmn && (
-        <h2>
-          <span id="wrong">Wrong!</span> It is{" "}
-          {correctPkmn.pkmnName.charAt(0).toUpperCase() +
-            correctPkmn.pkmnName.slice(1)}
-          !
-        </h2>
-      )}
+      <div id="game-header">
+        <h1>Who's that Pkmn?</h1>
+        {guess === "correct" && correctPkmn && (
+          <h2 className="guess-header">
+            <span id="correct">Correct!</span>
+            <br /> It is{" "}
+            {correctPkmn.pkmnName.charAt(0).toUpperCase() +
+              correctPkmn.pkmnName.slice(1)}
+            !
+          </h2>
+        )}
+        {guess === "wrong" && correctPkmn && (
+          <h2 className="guess-header">
+            <span id="wrong">Wrong!</span>
+            <br /> It is{" "}
+            {correctPkmn.pkmnName.charAt(0).toUpperCase() +
+              correctPkmn.pkmnName.slice(1)}
+            !
+          </h2>
+        )}
+      </div>
       {pkmnArr.length !== 0 && correctPkmn !== undefined && (
         <>
           <PkmnClue
