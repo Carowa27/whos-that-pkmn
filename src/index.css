@@ -223,3 +223,6 @@ input[type="radio"] {
   display: flex;
   justify-content: space-evenly;
 }
+#dex-entry {
+  padding-left: 1rem;
+}
