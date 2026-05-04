@@ -1,4 +1,22 @@
-export interface pkmn {
+export interface pkmnWDex {
+  id: number;
+  pkmnName: string;
+  dexEntries: FlavorTextEntry;
+}
+interface FlavorTextEntry {
+  flavor_text: string;
+
+  language: {
+    name: string;
+    url: string;
+  };
+
+  version: {
+    name: string;
+    url: string;
+  };
+}
+export interface pkmnWSprite {
   id: number;
   pkmnName: string;
   sprites: PokemonSprites;

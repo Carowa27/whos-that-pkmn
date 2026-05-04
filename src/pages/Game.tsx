@@ -2,14 +2,18 @@ import { useLocation } from "react-router-dom";
 import { PkmnClue } from "../components/PkmnClue";
 import { PkmnGuessInput } from "../components/PkmnGuessInput";
 import { useEffect, useState } from "react";
-import { getPkmnFromGeneration, getSpecificPkmn } from "../api/getPkmn";
-import type { pkmn } from "../types/pkmn";
+import {
+  getPkmnFromGeneration,
+  getSpecificPkmn,
+  getSpecificPkmnDexEntry,
+} from "../api/getPkmn";
+import type { pkmnWDex, pkmnWSprite } from "../types/pkmn";
 import { NewGameBtns } from "../components/NewGameBtns";
 
 export const Game = () => {
   const location = useLocation();
-  const [correctPkmn, setCorrectPkmn] = useState<pkmn>();
-  const [pkmnArr, setPkmnArr] = useState<pkmn[]>([]);
+  const [correctPkmn, setCorrectPkmn] = useState<pkmnWSprite | pkmnWDex>();
+  const [pkmnArr, setPkmnArr] = useState<pkmnWSprite[] | pkmnWDex[]>([]);
   const { gameCriteria } = location.state || {};
   const [reveal, setReveal] = useState(false);
   const [guess, setGuess] = useState("");
@@ -50,11 +54,21 @@ export const Game = () => {
         }
       }
 
-      const [p0, p1, p2] = await Promise.all([
-        getSpecificPkmn(randomNrArr[0]),
-        getSpecificPkmn(randomNrArr[1]),
-        getSpecificPkmn(randomNrArr[2]),
-      ]);
+      let p0, p1, p2;
+
+      if (gameCriteria.pkmnClue === "img") {
+        [p0, p1, p2] = await Promise.all([
+          getSpecificPkmn(randomNrArr[0]),
+          getSpecificPkmn(randomNrArr[1]),
+          getSpecificPkmn(randomNrArr[2]),
+        ]);
+      } else {
+        [p0, p1, p2] = await Promise.all([
+          getSpecificPkmnDexEntry(randomNrArr[0]),
+          getSpecificPkmnDexEntry(randomNrArr[1]),
+          getSpecificPkmnDexEntry(randomNrArr[2]),
+        ]);
+      }
 
       const correct = p1;
       setCorrectPkmn(correct);
