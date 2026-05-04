@@ -1,19 +1,19 @@
 import { useLocation } from "react-router-dom";
 import { PkmnClue } from "../components/PkmnClue";
 import { PkmnGuessInput } from "../components/PkmnGuessInput";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import {
   getPkmnFromGeneration,
   getSpecificPkmn,
   getSpecificPkmnDexEntry,
 } from "../api/getPkmn";
-import type { pkmnWDex, pkmnWSprite } from "../types/pkmn";
+import type { pkmnFromGen, pkmnWDex, pkmnWSprite } from "../types/pkmn";
 import { NewGameBtns } from "../components/NewGameBtns";
 
 export const Game = () => {
   const location = useLocation();
   const [correctPkmn, setCorrectPkmn] = useState<pkmnWSprite | pkmnWDex>();
-  const [pkmnArr, setPkmnArr] = useState<pkmnWSprite[] | pkmnWDex[]>([]);
+  const [pkmnArr, setPkmnArr] = useState<(pkmnWSprite | pkmnWDex)[]>([]);
   const { gameCriteria } = location.state || {};
   const [reveal, setReveal] = useState(false);
   const [guess, setGuess] = useState("");
@@ -33,7 +33,7 @@ export const Game = () => {
       if (pkmnGen !== "nat") {
         const pkmnFromGen = await getPkmnFromGeneration(pkmnGen);
         const ids = pkmnFromGen
-          .map((p) => {
+          .map((p: pkmnFromGen) => {
             const match = p.url.match(/pokemon-species\/(\d+)\//);
             return match ? Number(match[1]) : null;
           })
@@ -54,7 +54,9 @@ export const Game = () => {
         }
       }
 
-      let p0, p1, p2;
+      let p0: pkmnWDex | pkmnWSprite,
+        p1: pkmnWDex | pkmnWSprite,
+        p2: pkmnWDex | pkmnWSprite;
 
       if (gameCriteria.pkmnClue === "img") {
         [p0, p1, p2] = await Promise.all([
@@ -84,7 +86,7 @@ export const Game = () => {
     }
   }, [pkmnGen, startNewGame]);
 
-  const handleGuess = (e) => {
+  const handleGuess = (e: ChangeEvent<HTMLFormElement, Element>) => {
     setReveal(true);
     console.log(e.target.value);
     if (gameCriteria.pkmnAnswer === "multipleChoices") {

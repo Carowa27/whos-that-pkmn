@@ -12,7 +12,9 @@ export const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     // Här kan du lägga till auth tokens, logging, etc.
-    console.log(`🚀 API Request: ${config.method.toUpperCase()} ${config.url}`);
+    console.log(
+      `🚀 API Request: ${config.method?.toUpperCase()} ${config.url}`,
+    );
     return config;
   },
   (error) => {

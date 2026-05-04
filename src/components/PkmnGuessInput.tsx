@@ -1,9 +1,10 @@
-import type { pkmn } from "../types/pkmn";
+import type { ChangeEvent } from "react";
+import type { pkmnWSprite, pkmnWDex } from "../types/pkmn";
 
 interface IPkmnGuessProps {
   typeOfAnswer: "multipleChoices" | "textInput";
-  pkmnArr: pkmn[];
-  handleGuess: (e) => void;
+  pkmnArr: (pkmnWSprite | pkmnWDex)[];
+  handleGuess: (e: ChangeEvent<HTMLFormElement, Element>) => void;
 }
 
 export const PkmnGuessInput = ({
@@ -15,7 +16,7 @@ export const PkmnGuessInput = ({
     <>
       {typeOfAnswer === "multipleChoices" ? (
         <form id="pkmn-guess-form" onChange={(e) => handleGuess(e)}>
-          {pkmnArr.map((p) => (
+          {pkmnArr.map((p: pkmnWDex | pkmnWSprite) => (
             <label key={p.pkmnName} htmlFor={p.pkmnName} className="button">
               <input
                 type="radio"

@@ -1,7 +1,11 @@
+export interface pkmnFromGen {
+  name: string;
+  url: string;
+}
 export interface pkmnWDex {
   id: number;
   pkmnName: string;
-  dexEntries: FlavorTextEntry;
+  dexEntries: FlavorTextEntry[];
 }
 interface FlavorTextEntry {
   flavor_text: string;
@@ -21,7 +25,7 @@ export interface pkmnWSprite {
   pkmnName: string;
   sprites: PokemonSprites;
 }
-type Sprite = string | null;
+type Sprite = string | undefined;
 
 interface PokemonSprites {
   back_default: Sprite;
