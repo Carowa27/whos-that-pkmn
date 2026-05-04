@@ -13,7 +13,7 @@ export const Game = () => {
   const { gameCriteria } = location.state || {};
   const [reveal, setReveal] = useState(false);
   const [guess, setGuess] = useState("");
-  const [startNewGame, setStartNewGame] = useState(false);
+  const [startNewGame, setStartNewGame] = useState(true);
 
   const pkmnGen =
     gameCriteria?.generation === "nat"
@@ -26,7 +26,6 @@ export const Game = () => {
     const getPkmnFromCorrectGen = async () => {
       setReveal(false);
       setGuess("");
-      setStartNewGame(false);
       let lowest = 1;
       let highest = 1025;
       if (pkmnGen !== "nat") {
@@ -39,11 +38,12 @@ export const Game = () => {
         lowest = Math.min(...ids);
         highest = Math.max(...ids);
       }
+
       if (startNewGame === true) {
         randomNrArr = Array.from(
           { length: 3 },
           () => Math.floor(Math.random() * (highest - lowest + 1)) + lowest,
-        );
+        ).filter((id) => id !== correctPkmn?.id);
       }
 
       const [p0, p1, p2] = await Promise.all([
@@ -58,7 +58,10 @@ export const Game = () => {
       answers.sort(() => Math.random() - 0.5);
 
       setPkmnArr(answers);
+      setStartNewGame(false);
     };
+    console.log(randomNrArr);
+
     getPkmnFromCorrectGen();
   }, [pkmnGen, startNewGame]);
 
