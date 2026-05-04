@@ -24,6 +24,24 @@ export const getSpecificPkmn = async (id: number) => {
   }
 };
 
+export const getSpecificPkmnDexEntry = async (id: number) => {
+  try {
+    const response = await apiClient.get(`/pokemon-species/${id}`);
+    const pkmn = {
+      id: response.data.order,
+      pkmnName: response.data.name,
+      dexEntries: response.data.flavor_text_entries,
+    };
+
+    return pkmn;
+  } catch (error) {
+    throw new Error(
+      `Failed to fetch posts: ${error instanceof Error ? error.message : String(error)}`,
+      { cause: error },
+    );
+  }
+};
+
 export const getPkmnFromGeneration = async (gen: number) => {
   try {
     const response = await apiClient.get(`/generation/${gen}`);
