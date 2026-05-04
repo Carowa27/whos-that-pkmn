@@ -6,7 +6,7 @@ interface INewGameProps {
 
 export const NewGameBtns = ({ startNewGame }: INewGameProps) => {
   return (
-    <>
+    <div>
       <p>New game:</p>
       <section id="new-game-btn-section">
         <button>
@@ -14,6 +14,6 @@ export const NewGameBtns = ({ startNewGame }: INewGameProps) => {
         </button>
         <button onClick={() => startNewGame()}>With same criterias</button>
       </section>
-    </>
+    </div>
   );
 };

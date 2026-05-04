@@ -110,7 +110,9 @@ code {
 }
 .page-wrapper {
   min-height: calc(100vh - 72px);
+  min-width: 300px;
   max-width: 1500px;
+  padding: 0 1rem;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
