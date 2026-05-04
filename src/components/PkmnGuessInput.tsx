@@ -16,7 +16,7 @@ export const PkmnGuessInput = ({
       {typeOfAnswer === "multipleChoices" ? (
         <form id="pkmn-guess-form" onChange={(e) => handleGuess(e)}>
           {pkmnArr.map((p) => (
-            <label key={p.pkmnName} htmlFor={p.pkmnName}>
+            <label key={p.pkmnName} htmlFor={p.pkmnName} className="button">
               <input
                 type="radio"
                 name="pokemon"

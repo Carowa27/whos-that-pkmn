@@ -109,10 +109,12 @@ code {
   background: var(--code-bg);
 }
 .page-wrapper {
+  min-height: calc(100vh - 72px);
+  max-width: 1500px;
   display: flex;
   flex-direction: column;
-  max-width: 1500px;
-  border: #6b6375 solid 2px;
+  justify-content: space-evenly;
+  outline: #6b6375 solid 2px;
 }
 nav {
   height: 72px;
@@ -136,6 +138,19 @@ a {
   text-decoration: none;
   color: inherit;
 }
+button,
+.button {
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  background-color: var(--accent-bg);
+}
+.button:has(input[type="radio"]:checked) {
+  background-color: var(--accent-border);
+  color: var(--text-h);
+}
+button:disabled {
+  background-color: var(--shadow);
+}
 .pkmn-guess-img {
   max-height: 50vh;
   max-width: 100%;
@@ -158,13 +173,13 @@ input[type="radio"] {
   display: flex;
   justify-content: space-evenly;
 }
-#pkmn-guess-form label {
+/* #pkmn-guess-form label {
   border: 1px solid var(--border);
   padding: 0.5rem 1rem;
-}
-#pkmn-guess-form label:has(input[type="radio"]:checked) {
+} */
+/* #pkmn-guess-form label:has(input[type="radio"]:checked) {
   background-color: var(--accent-border);
-}
+} */
 #correct {
   color: green;
 }
@@ -174,6 +189,23 @@ input[type="radio"] {
 
 #new-game-btn-section {
   margin-top: 4px;
+  display: flex;
+  justify-content: space-evenly;
+}
+#game-criteria-form {
+  display: flex;
+  flex-direction: column;
+  padding: 0 1rem;
+  gap: 1rem;
+}
+#game-criteria-form h4 {
+  margin: 0;
+}
+#clue-section {
+  display: flex;
+  justify-content: space-evenly;
+}
+#answer-section {
   display: flex;
   justify-content: space-evenly;
 }
