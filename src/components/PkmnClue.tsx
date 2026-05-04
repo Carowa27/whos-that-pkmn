@@ -8,36 +8,33 @@ interface IPkmnClueProps {
 }
 
 export const PkmnClue = ({ typeOfClue, pkmn, reveal }: IPkmnClueProps) => {
-  console.log(typeOfClue, pkmn);
-  const textTrim = (text: string) => {
-    const trimmedText = text
-      .replace(/\f/g, " ")
-      .trim()
-      .split("\n")
-      .join("<br/>");
-    return trimmedText;
-  };
-  const dexEntry =
-    "dexEntries" in pkmn &&
-    (pkmn.dexEntries[0].language.name === "en"
-      ? textTrim(pkmn.dexEntries[0].flavor_text)
-      : pkmn.dexEntries[0].language.name === "en"
-        ? textTrim(pkmn.dexEntries[1].flavor_text)
-        : pkmn.dexEntries[2].flavor_text);
-  console.log(dexEntry);
+  if ("dexEntries" in pkmn) {
+    const textTrim = (text: string) => {
+      const trimmedText = text
+        .replace(/\f/g, " ")
+        .trim()
+        .split("\n")
+        .join("<br/>");
+      return trimmedText;
+    };
+    const dexEntry =
+      pkmn.dexEntries[0].language.name === "en"
+        ? textTrim(pkmn.dexEntries[0].flavor_text)
+        : pkmn.dexEntries[0].language.name === "en"
+          ? textTrim(pkmn.dexEntries[1].flavor_text)
+          : pkmn.dexEntries[2].flavor_text;
+    return (
+      <p
+        id="dex-entry"
+        dangerouslySetInnerHTML={{ __html: textTrim(dexEntry) }}
+      />
+    );
+  }
 
-  console.log(textTrim(dexEntry));
   return (
     <div>
       <h4>PkmnClue:</h4>
-      {typeOfClue === "img" ? (
-        <Pkmn pkmn={pkmn} reveal={reveal} />
-      ) : (
-        <p
-          id="dex-entry"
-          dangerouslySetInnerHTML={{ __html: textTrim(dexEntry) }}
-        />
-      )}
+      {typeOfClue === "img" && <Pkmn pkmn={pkmn} reveal={reveal} />}
     </div>
   );
 };
