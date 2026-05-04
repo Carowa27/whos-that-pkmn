@@ -138,6 +138,18 @@ a {
   text-decoration: none;
   color: inherit;
 }
+select {
+  border: 1px solid var(--border);
+  padding: 0.5rem;
+  background-color: var(--accent-bg);
+}
+select:has(option:checked) {
+  background-color: var(--accent-border);
+  color: var(--text-h);
+}
+option {
+  background-color: var(--border);
+}
 button,
 .button {
   border: 1px solid var(--border);

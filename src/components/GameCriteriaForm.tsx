@@ -49,7 +49,9 @@ export const GameCriteriaForm = () => {
       <h4>Choose your game criterias:</h4>
 
       <select name="generation" defaultValue="">
-        <option value="">Select Gen or All</option>
+        <option value="" disabled selected hidden>
+          Select Gen or All
+        </option>
         <option value="nat">National PokeDex</option>
         <option value="gen1">Gen 1</option>
         <option value="gen2">Gen 2</option>
