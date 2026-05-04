@@ -121,6 +121,9 @@ code {
   gap: 4rem;
   /* outline: #6b6375 solid 2px; */
 }
+.page-wrapper img {
+  margin-top: 1rem;
+}
 nav {
   height: 72px;
   width: 100%;
@@ -223,6 +226,7 @@ input[type="radio"] {
   flex-direction: column;
   padding: 0 1rem;
   gap: 1rem;
+  margin-top: 2rem;
 }
 #game-criteria-form h4 {
   margin: 0;

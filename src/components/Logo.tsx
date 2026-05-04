@@ -10,7 +10,7 @@ export const Logo = ({ position }: ILogoProps) => {
       <img
         src={logo}
         alt="who's that pkmn logo"
-        width={position === "nav" ? 60 : 400}
+        width={position === "nav" ? 60 : 300}
       />
     </>
   );
