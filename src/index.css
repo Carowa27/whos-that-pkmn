@@ -123,6 +123,17 @@ code {
 #logo-frontpage {
   margin-top: 1rem;
 }
+.logo-dark {
+  display: none;
+}
+
+.dark .logo-light {
+  display: none;
+}
+
+.dark .logo-dark {
+  display: block;
+}
 nav {
   height: 72px;
   width: 100%;
