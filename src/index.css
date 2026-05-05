@@ -119,9 +119,8 @@ code {
   display: flex;
   flex-direction: column;
   gap: 4rem;
-  /* outline: #6b6375 solid 2px; */
 }
-.page-wrapper img {
+#logo-frontpage {
   margin-top: 1rem;
 }
 nav {
@@ -141,6 +140,7 @@ nav {
 
   left: 50%;
   transform: translateX(-50%);
+  font-size: medium;
 }
 a {
   text-decoration: none;
