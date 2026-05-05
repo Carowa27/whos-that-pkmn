@@ -58,7 +58,11 @@ export const getSpecificPkmnDexEntry = async (
   }
 };
 
-export const getPkmnFromGeneration = async (gen: number) => {
+export const getPkmnFromGeneration = async (
+  gen: number,
+  setIsLoading: (value: boolean) => void,
+) => {
+  setIsLoading(true);
   try {
     const response = await apiClient.get(`/generation/${gen}`);
     return response.data.pokemon_species;
@@ -68,6 +72,6 @@ export const getPkmnFromGeneration = async (gen: number) => {
       { cause: error },
     );
   } finally {
-    console.log("done");
+    setIsLoading(false);
   }
 };

@@ -34,7 +34,7 @@ export const Game = () => {
       let lowest = 1;
       let highest = 1025;
       if (pkmnGen !== "nat") {
-        const pkmnFromGen = await getPkmnFromGeneration(pkmnGen);
+        const pkmnFromGen = await getPkmnFromGeneration(pkmnGen, setIsLoading);
         const ids = pkmnFromGen
           .map((p: pkmnFromGen) => {
             const match = p.url.match(/pokemon-species\/(\d+)\//);
@@ -95,7 +95,6 @@ export const Game = () => {
   };
   const handleGuess = (e: ChangeEvent<HTMLFormElement, Element>) => {
     setReveal(true);
-    console.log(e.target.value);
     if (gameCriteria.pkmnAnswer === "multipleChoices") {
       if (correctPkmn && e.target.value === correctPkmn.pkmnName) {
         setGuess("correct");

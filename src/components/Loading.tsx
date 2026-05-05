@@ -2,7 +2,6 @@ import { useLocation } from "react-router-dom";
 
 export const Loading = () => {
   const location = useLocation().pathname;
-  console.log(location);
   return (
     <div id="loader-wrapper">
       <img

@@ -19,7 +19,6 @@ export const PkmnClue = ({ typeOfClue, pkmn, reveal }: IPkmnClueProps) => {
         : pkmn.dexEntries[0].language.name === "en"
           ? textTrim(pkmn.dexEntries[1].flavor_text)
           : pkmn.dexEntries[2].flavor_text;
-    console.log(pkmn);
     return (
       <p
         id="dex-entry"
