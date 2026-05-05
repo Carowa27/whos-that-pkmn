@@ -10,11 +10,7 @@ interface IPkmnClueProps {
 export const PkmnClue = ({ typeOfClue, pkmn, reveal }: IPkmnClueProps) => {
   if ("dexEntries" in pkmn) {
     const textTrim = (text: string) => {
-      const trimmedText = text
-        .replace(/\f/g, " ")
-        .trim()
-        .split("\n")
-        .join("<br/>");
+      const trimmedText = text.replace(/\f/g, " ").trim().split("\n").join(" ");
       return trimmedText;
     };
     const dexEntry =
@@ -27,15 +23,12 @@ export const PkmnClue = ({ typeOfClue, pkmn, reveal }: IPkmnClueProps) => {
     return (
       <p
         id="dex-entry"
-        dangerouslySetInnerHTML={{ __html: textTrim(dexEntry) }}
+        dangerouslySetInnerHTML={{ __html: '"' + textTrim(dexEntry) + '"' }}
       />
     );
   }
 
   return (
-    <div>
-      <h4>PkmnClue:</h4>
-      {typeOfClue === "img" && <Pkmn pkmn={pkmn} reveal={reveal} />}
-    </div>
+    <div>{typeOfClue === "img" && <Pkmn pkmn={pkmn} reveal={reveal} />}</div>
   );
 };
