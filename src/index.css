@@ -122,6 +122,7 @@ code {
 }
 #logo-frontpage {
   margin-top: 1rem;
+  align-self: center;
 }
 .logo-dark {
   display: none;
