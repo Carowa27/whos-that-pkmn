@@ -8,7 +8,7 @@ import { apiClient } from "./axiosConfig";
 
 export const getSpecificPkmn = async (
   id: number,
-  setIsLoading: (boolean) => void,
+  setIsLoading: (value: boolean) => void,
 ) => {
   setIsLoading(true);
   try {
@@ -34,7 +34,7 @@ export const getSpecificPkmn = async (
 
 export const getSpecificPkmnDexEntry = async (
   id: number,
-  setIsLoading: (boolean) => void,
+  setIsLoading: (value: boolean) => void,
 ) => {
   setIsLoading(true);
   try {
