@@ -120,20 +120,26 @@ code {
   flex-direction: column;
   gap: 4rem;
 }
-#logo-frontpage {
+.logo-frontpage {
   margin-top: 1rem;
   align-self: center;
 }
+.logo-light {
+  display: none;
+}
+
 .logo-dark {
-  display: none;
-}
-
-.dark .logo-light {
-  display: none;
-}
-
-.dark .logo-dark {
   display: block;
+}
+
+@media (prefers-color-scheme: dark) {
+  .logo-light {
+    display: block;
+  }
+
+  .logo-dark {
+    display: none;
+  }
 }
 nav {
   height: 72px;
