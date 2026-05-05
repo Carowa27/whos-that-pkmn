@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { PkmnClue } from "../components/PkmnClue";
 import { PkmnGuessInput } from "../components/PkmnGuessInput";
-import { useEffect, useState, type ChangeEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import {
   getPkmnFromGeneration,
   getSpecificPkmn,
@@ -9,6 +9,7 @@ import {
 } from "../api/getPkmn";
 import type { pkmnFromGen, pkmnWDex, pkmnWSprite } from "../types/pkmn";
 import { NewGameBtns } from "../components/NewGameBtns";
+import { Loading } from "../components/Loading";
 
 export const Game = () => {
   const location = useLocation();
@@ -17,7 +18,9 @@ export const Game = () => {
   const { gameCriteria } = location.state || {};
   const [reveal, setReveal] = useState(false);
   const [guess, setGuess] = useState("");
-  const [startNewGame, setStartNewGame] = useState(true);
+  const [newGame, setNewGame] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const hasFetched = useRef(false);
 
   const pkmnGen =
     gameCriteria?.generation === "nat"
@@ -60,15 +63,15 @@ export const Game = () => {
 
       if (gameCriteria.pkmnClue === "img") {
         [p0, p1, p2] = await Promise.all([
-          getSpecificPkmn(randomNrArr[0]),
-          getSpecificPkmn(randomNrArr[1]),
-          getSpecificPkmn(randomNrArr[2]),
+          getSpecificPkmn(randomNrArr[0], setIsLoading),
+          getSpecificPkmn(randomNrArr[1], setIsLoading),
+          getSpecificPkmn(randomNrArr[2], setIsLoading),
         ]);
       } else {
         [p0, p1, p2] = await Promise.all([
-          getSpecificPkmnDexEntry(randomNrArr[0]),
-          getSpecificPkmnDexEntry(randomNrArr[1]),
-          getSpecificPkmnDexEntry(randomNrArr[2]),
+          getSpecificPkmnDexEntry(randomNrArr[0], setIsLoading),
+          getSpecificPkmnDexEntry(randomNrArr[1], setIsLoading),
+          getSpecificPkmnDexEntry(randomNrArr[2], setIsLoading),
         ]);
       }
 
@@ -79,13 +82,17 @@ export const Game = () => {
       answers.sort(() => Math.random() - 0.5);
 
       setPkmnArr(answers);
-      setStartNewGame(false);
+      setNewGame(false);
     };
-    if (startNewGame) {
+    if (newGame && !hasFetched.current) {
+      hasFetched.current = true;
       getPkmnFromCorrectGen();
     }
-  }, [pkmnGen, startNewGame]);
-
+  }, [pkmnGen, newGame]);
+  const startNewGame = () => {
+    setNewGame(true);
+    hasFetched.current = false;
+  };
   const handleGuess = (e: ChangeEvent<HTMLFormElement, Element>) => {
     setReveal(true);
     console.log(e.target.value);
@@ -123,7 +130,8 @@ export const Game = () => {
           </h2>
         )}
       </div>
-      {pkmnArr.length !== 0 && correctPkmn !== undefined && (
+      {isLoading && <Loading />}
+      {!isLoading && pkmnArr.length !== 0 && correctPkmn !== undefined && (
         <>
           <PkmnClue
             typeOfClue={gameCriteria.pkmnClue}
@@ -137,7 +145,7 @@ export const Game = () => {
               handleGuess={(e) => handleGuess(e)}
             />
           ) : (
-            <NewGameBtns startNewGame={() => setStartNewGame(true)} />
+            <NewGameBtns startNewGame={() => startNewGame()} />
           )}
         </>
       )}
