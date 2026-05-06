@@ -6,15 +6,12 @@ import { PkmnGuessInput } from "../components/PkmnGuessInput";
 import { NewGameBtns } from "../components/NewGameBtns";
 import { Loading } from "../components/Loading";
 
-import {
-  getPkmnFromGeneration,
-  getSpecificPkmn,
-  getSpecificPkmnDexEntry,
-} from "../api/getPkmn";
+import { getSpecificPkmn, getSpecificPkmnDexEntry } from "../api/getPkmn";
 
-import type { pkmn, pkmnFromGen } from "../types/pkmn";
+import type { pkmn } from "../types/pkmn";
 import type { GameState } from "../types/game";
 import { Header } from "../components/Header";
+import { getGenIds } from "../functions";
 
 interface GameProps {
   setCorrectGuesses: React.Dispatch<React.SetStateAction<pkmn[]>>;
@@ -43,17 +40,9 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
 
       if (gen !== "nat" && gen !== undefined) {
         const generation = Number(gen.replace("gen", ""));
-        const pkmnFromGen = await getPkmnFromGeneration(generation);
-
-        const ids = pkmnFromGen
-          .map((p: pkmnFromGen) => {
-            const match = p.url.match(/pokemon-species\/(\d+)\//);
-            return match ? Number(match[1]) : null;
-          })
-          .filter((id: number) => id !== null);
-
-        low = Math.min(...ids);
-        high = Math.max(...ids);
+        const genIds = await getGenIds(generation);
+        low = genIds.low;
+        high = genIds.high;
       }
       const ids = getRandomNumbers(low, high);
       resetGame();
