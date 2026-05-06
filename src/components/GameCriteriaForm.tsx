@@ -6,8 +6,8 @@ export const GameCriteriaForm = () => {
 
   const [formState, setFormState] = useState({
     generation: "",
-    pkmnClue: "",
-    pkmnAnswer: "",
+    clueType: "",
+    alternativeType: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLFormElement>) => {
@@ -26,19 +26,13 @@ export const GameCriteriaForm = () => {
 
     const formData = new FormData(e.currentTarget);
 
-    const gameCriteria = {
-      generation: formData.get("generation"),
-      pkmnClue: formData.get("pkmnClue"),
-      pkmnAnswer: formData.get("pkmnAnswer"),
-    };
-
-    navigate("/game", {
-      state: { gameCriteria },
-    });
+    navigate(
+      `/game/${formData.get("generation")}/${formData.get("clueType")}/${formData.get("alternativeType")}/`,
+    );
   };
 
   const isFormValid =
-    formState.generation && formState.pkmnClue && formState.pkmnAnswer;
+    formState.generation && formState.clueType && formState.alternativeType;
 
   return (
     <form
@@ -66,24 +60,24 @@ export const GameCriteriaForm = () => {
 
       <div id="clue-section">
         <label className="button">
-          <input type="radio" name="pkmnClue" value="img" />
+          <input type="radio" name="clueType" value="img" />
           Img
         </label>
 
         <label className="button">
-          <input type="radio" name="pkmnClue" value="dexEntry" />
+          <input type="radio" name="clueType" value="dex" />
           PokeDex entry
         </label>
       </div>
 
       <div id="answer-section">
         <label className="button">
-          <input type="radio" name="pkmnAnswer" value="multipleChoices" />
+          <input type="radio" name="alternativeType" value="multiple" />
           Multiple choices
         </label>
 
         <label className="button">
-          <input type="radio" name="pkmnAnswer" value="textInput" />
+          <input type="radio" name="alternativeType" value="text" />
           Text input
         </label>
       </div>

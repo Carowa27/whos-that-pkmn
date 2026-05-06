@@ -2,7 +2,7 @@ import type { pkmnWDex, pkmnWSprite } from "../types/pkmn";
 import { Pkmn } from "./Pkmn";
 
 interface IPkmnClueProps {
-  typeOfClue: "img" | "dexEntry";
+  typeOfClue: string | undefined;
   pkmn: pkmnWSprite | pkmnWDex;
   reveal: boolean;
 }
@@ -19,7 +19,6 @@ export const PkmnClue = ({ typeOfClue, pkmn, reveal }: IPkmnClueProps) => {
         : pkmn.dexEntries[0].language.name === "en"
           ? textTrim(pkmn.dexEntries[1].flavor_text)
           : pkmn.dexEntries[2].flavor_text;
-    console.log(pkmn);
     return (
       <p
         id="dex-entry"

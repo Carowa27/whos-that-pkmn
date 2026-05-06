@@ -1,146 +1,200 @@
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useEffect, useState, type ChangeEvent } from "react";
+
 import { PkmnClue } from "../components/PkmnClue";
 import { PkmnGuessInput } from "../components/PkmnGuessInput";
-import { useEffect, useState, type ChangeEvent } from "react";
+import { NewGameBtns } from "../components/NewGameBtns";
+import { Loading } from "../components/Loading";
+
 import {
   getPkmnFromGeneration,
   getSpecificPkmn,
   getSpecificPkmnDexEntry,
 } from "../api/getPkmn";
-import type { pkmnFromGen, pkmnWDex, pkmnWSprite } from "../types/pkmn";
-import { NewGameBtns } from "../components/NewGameBtns";
+
+import type { pkmnFromGen } from "../types/pkmn";
+import type { GameState } from "../types/game";
 
 export const Game = () => {
-  const location = useLocation();
-  const [correctPkmn, setCorrectPkmn] = useState<pkmnWSprite | pkmnWDex>();
-  const [pkmnArr, setPkmnArr] = useState<(pkmnWSprite | pkmnWDex)[]>([]);
-  const { gameCriteria } = location.state || {};
-  const [reveal, setReveal] = useState(false);
-  const [guess, setGuess] = useState("");
-  const [startNewGame, setStartNewGame] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [gameState, setGameState] = useState<GameState>({
+    alternatives: [],
+    correct: {
+      id: 0,
+      pkmnName: "",
+      dexEntries: [
+        {
+          flavor_text: "",
 
-  const pkmnGen =
-    gameCriteria?.generation === "nat"
-      ? "nat"
-      : gameCriteria?.generation?.replace("gen", "");
+          language: {
+            name: "",
+            url: "",
+          },
 
-  useEffect(() => {
-    const getPkmnFromCorrectGen = async () => {
-      setReveal(false);
-      setGuess("");
-      let lowest = 1;
-      let highest = 1025;
-      if (pkmnGen !== "nat") {
-        const pkmnFromGen = await getPkmnFromGeneration(pkmnGen);
+          version: {
+            name: "",
+            url: "",
+          },
+        },
+      ],
+    },
+    guess: "",
+    reveal: false,
+  });
+  const { gen, clueType, alternativeType } = useParams();
+
+  const newGame = async () => {
+    setIsLoading(true);
+    try {
+      let low = 1;
+      let high = 1025;
+
+      if (gen !== "nat" && gen !== undefined) {
+        const generation = Number(gen.replace("gen", ""));
+        const pkmnFromGen = await getPkmnFromGeneration(generation);
+
         const ids = pkmnFromGen
           .map((p: pkmnFromGen) => {
             const match = p.url.match(/pokemon-species\/(\d+)\//);
             return match ? Number(match[1]) : null;
           })
-          .filter(Boolean);
+          .filter((id: number) => id !== null);
 
-        lowest = Math.min(...ids);
-        highest = Math.max(...ids);
+        low = Math.min(...ids);
+        high = Math.max(...ids);
       }
+      const ids = getRandomNumbers(low, high);
+      resetGame();
 
-      const randomNrArr: number[] = [];
-
-      while (randomNrArr.length < 3) {
-        const rand =
-          Math.floor(Math.random() * (highest - lowest + 1)) + lowest;
-
-        if (rand !== correctPkmn?.id && !randomNrArr.includes(rand)) {
-          randomNrArr.push(rand);
-        }
-      }
-
-      let p0: pkmnWDex | pkmnWSprite,
-        p1: pkmnWDex | pkmnWSprite,
-        p2: pkmnWDex | pkmnWSprite;
-
-      if (gameCriteria.pkmnClue === "img") {
-        [p0, p1, p2] = await Promise.all([
-          getSpecificPkmn(randomNrArr[0]),
-          getSpecificPkmn(randomNrArr[1]),
-          getSpecificPkmn(randomNrArr[2]),
-        ]);
-      } else {
-        [p0, p1, p2] = await Promise.all([
-          getSpecificPkmnDexEntry(randomNrArr[0]),
-          getSpecificPkmnDexEntry(randomNrArr[1]),
-          getSpecificPkmnDexEntry(randomNrArr[2]),
-        ]);
-      }
-
+      const fetchFn =
+        clueType === "img" ? getSpecificPkmn : getSpecificPkmnDexEntry;
+      const [p0, p1, p2] = await Promise.all([
+        fetchFn(ids[0]),
+        fetchFn(ids[1]),
+        fetchFn(ids[2]),
+      ]);
       const correct = p1;
-      setCorrectPkmn(correct);
-      const answers = [p0, p1, p2];
+      const alternatives = [p0, p1, p2].sort(() => Math.random() - 0.5);
 
-      answers.sort(() => Math.random() - 0.5);
-
-      setPkmnArr(answers);
-      setStartNewGame(false);
-    };
-    if (startNewGame) {
-      getPkmnFromCorrectGen();
+      setGameState((prevState) => ({
+        ...prevState,
+        correct: correct,
+        alternatives: alternatives,
+      }));
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
     }
-  }, [pkmnGen, startNewGame]);
+  };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    newGame();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const resetGame = () => {
+    setGameState({
+      alternatives: [],
+      correct: {
+        id: 0,
+        pkmnName: "",
+        dexEntries: [
+          {
+            flavor_text: "",
+
+            language: {
+              name: "",
+              url: "",
+            },
+
+            version: {
+              name: "",
+              url: "",
+            },
+          },
+        ],
+      },
+      guess: "",
+      reveal: false,
+    });
+  };
+
+  const getRandomNumbers = (low: number, high: number) => {
+    const ids = Array.from({ length: high - low + 1 }, (_, i) => i + low)
+      .filter((id) => id !== gameState.correct.id)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3);
+    return ids;
+  };
 
   const handleGuess = (e: ChangeEvent<HTMLFormElement, Element>) => {
-    setReveal(true);
-    console.log(e.target.value);
-    if (gameCriteria.pkmnAnswer === "multipleChoices") {
-      if (correctPkmn && e.target.value === correctPkmn.pkmnName) {
-        setGuess("correct");
+    setGameState((prevState) => ({
+      ...prevState,
+      reveal: true,
+    }));
+    if (alternativeType === "multiple") {
+      if (gameState.correct && e.target.value === gameState.correct.pkmnName) {
+        setGameState((prevState) => ({
+          ...prevState,
+          guess: "correct",
+        }));
       } else {
-        setGuess("wrong");
+        setGameState((prevState) => ({
+          ...prevState,
+          guess: "wrong",
+        }));
       }
     } else {
       console.log(e.target.value);
     }
   };
-  // console.log("guess", guess, "pkmnArr", pkmnArr, "correctPkmn", correctPkmn);
+
   return (
     <>
       <div id="game-header">
         <h1>Who's that Pkmn?</h1>
-        {guess === "correct" && correctPkmn && (
+        {gameState.guess === "correct" && gameState.correct && (
           <h2 className="guess-header">
             <span id="correct">Correct!</span>
             <br /> It is{" "}
-            {correctPkmn.pkmnName.charAt(0).toUpperCase() +
-              correctPkmn.pkmnName.slice(1)}
+            {gameState.correct.pkmnName.charAt(0).toUpperCase() +
+              gameState.correct.pkmnName.slice(1)}
             !
           </h2>
         )}
-        {guess === "wrong" && correctPkmn && (
+        {gameState.guess === "wrong" && gameState.correct && (
           <h2 className="guess-header">
             <span id="wrong">Wrong!</span>
             <br /> It is{" "}
-            {correctPkmn.pkmnName.charAt(0).toUpperCase() +
-              correctPkmn.pkmnName.slice(1)}
+            {gameState.correct.pkmnName.charAt(0).toUpperCase() +
+              gameState.correct.pkmnName.slice(1)}
             !
           </h2>
         )}
       </div>
-      {pkmnArr.length !== 0 && correctPkmn !== undefined && (
-        <>
-          <PkmnClue
-            typeOfClue={gameCriteria.pkmnClue}
-            pkmn={correctPkmn}
-            reveal={reveal}
-          />
-          {guess === "" ? (
-            <PkmnGuessInput
-              typeOfAnswer={gameCriteria.pkmnAnswer}
-              pkmnArr={pkmnArr}
-              handleGuess={(e) => handleGuess(e)}
+      {isLoading && <Loading />}
+      {!isLoading &&
+        gameState.alternatives.length !== 0 &&
+        gameState.correct !== null && (
+          <>
+            <PkmnClue
+              typeOfClue={clueType}
+              pkmn={gameState.correct}
+              reveal={gameState.reveal}
             />
-          ) : (
-            <NewGameBtns startNewGame={() => setStartNewGame(true)} />
-          )}
-        </>
-      )}
+            {gameState.guess === "" ? (
+              <PkmnGuessInput
+                typeOfAnswer={alternativeType}
+                alternatives={gameState.alternatives}
+                handleGuess={(e) => handleGuess(e)}
+              />
+            ) : (
+              <NewGameBtns startNewGame={() => newGame()} />
+            )}
+          </>
+        )}
     </>
   );
 };
