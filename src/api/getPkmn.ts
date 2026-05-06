@@ -10,7 +10,7 @@ export const getSpecificPkmn = async (id: number) => {
   try {
     const response = await apiClient.get(`/pokemon/${id}`);
     const pkmn = {
-      id: response.data.order,
+      id: response.data.id,
       pkmnName: response.data.name,
       dexEntries: null,
       sprites: response.data.sprites,
@@ -29,7 +29,7 @@ export const getSpecificPkmnDexEntry = async (id: number) => {
   try {
     const response = await apiClient.get(`/pokemon-species/${id}`);
     const pkmn = {
-      id: response.data.order,
+      id: response.data.id,
       pkmnName: response.data.name,
       dexEntries: response.data.flavor_text_entries,
       sprites: null,
