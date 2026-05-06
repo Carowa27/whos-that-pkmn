@@ -9,7 +9,7 @@ import { Loading } from "../components/Loading";
 import type { pkmn } from "../types/pkmn";
 import type { GameState } from "../types/game";
 import { Header } from "../components/Header";
-import { getGenIds, getPkmnObject } from "../functions/functions";
+import { getGenIds, getPkmnObject } from "../functions/gameFns";
 
 interface GameProps {
   setCorrectGuesses: React.Dispatch<React.SetStateAction<pkmn[]>>;
