@@ -140,7 +140,7 @@ code {
 }
 nav {
   height: 72px;
-  width: 100%;
+  width: 100vw;
   background: var(--border);
   z-index: 100;
   bottom: 0;
