@@ -160,7 +160,7 @@ nav {
 }
 a {
   text-decoration: none;
-  color: inherit;
+  color: var(--text);
 }
 select {
   border: 1px solid var(--border);
@@ -181,10 +181,10 @@ button,
   background-color: var(--accent-bg);
   border-radius: 0.5rem;
   margin: 6px;
+  color: var(--text-h);
 }
 .button:has(input[type="radio"]:checked) {
   background-color: var(--accent-border);
-  color: var(--text-h);
 }
 button:disabled,
 .button:disabled,
