@@ -1,3 +1,4 @@
+import { Header } from "../components/Header";
 import { Pkmn } from "../components/Pkmn";
 import type { pkmn } from "../types/pkmn";
 
@@ -10,6 +11,7 @@ export const PkmnList = ({ correctGuesses }: ListPageProps) => {
 
   return (
     <>
+      <Header />
       <h3>Your correct guesses</h3>
       <ul id="pkmn-list">
         {correctGuesses.map((p: pkmn) => (

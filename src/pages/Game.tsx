@@ -14,6 +14,7 @@ import {
 
 import type { pkmn, pkmnFromGen } from "../types/pkmn";
 import type { GameState } from "../types/game";
+import { Header } from "../components/Header";
 
 interface GameProps {
   setCorrectGuesses: React.Dispatch<React.SetStateAction<pkmn[]>>;
@@ -146,7 +147,7 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
   return (
     <>
       <div id="game-header">
-        <h1>Who's that Pkmn?</h1>
+        <Header />
         {gameState.guess === "correct" && gameState.correct && (
           <h2 className="guess-header">
             <span id="correct">Correct!</span>
