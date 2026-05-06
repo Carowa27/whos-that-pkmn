@@ -6,7 +6,7 @@ interface INewGameProps {
 
 export const NewGameBtns = ({ startNewGame }: INewGameProps) => {
   return (
-    <div>
+    <div id="new-game-wrapper">
       <p>New game:</p>
       <section id="new-game-btn-section">
         <button>

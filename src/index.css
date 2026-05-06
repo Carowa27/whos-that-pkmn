@@ -118,10 +118,10 @@ code {
   padding: 4rem 1rem 0 1rem;
   display: flex;
   flex-direction: column;
-  gap: 4rem;
+  /* gap: 4rem; */
 }
 .logo-frontpage {
-  margin-top: 1rem;
+  margin: 1rem 0;
   align-self: center;
 }
 .logo-light {
@@ -212,6 +212,7 @@ input[type="radio"] {
 #pkmn-guess-form {
   display: flex;
   justify-content: space-evenly;
+  margin-top: 2rem;
   /* gap: 12px; */
 }
 /* #pkmn-guess-form label {
@@ -233,7 +234,9 @@ input[type="radio"] {
 #wrong {
   color: red;
 }
-
+#new-game-wrapper {
+  margin-top: 2rem;
+}
 #new-game-btn-section {
   margin-top: 4px;
   display: flex;
