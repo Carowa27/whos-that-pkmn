@@ -1,3 +1,4 @@
+import { Pkmn } from "../components/Pkmn";
 import type { pkmn } from "../types/pkmn";
 
 interface ListPageProps {
@@ -9,8 +10,14 @@ export const PkmnList = ({ correctGuesses }: ListPageProps) => {
 
   return (
     <>
-      PkmnList
-      {/* <Pkmn pkmn={undefined} reveal={false} /> */}
+      <h3>Your correct guesses</h3>
+      <ul id="pkmn-list">
+        {correctGuesses.map((p: pkmn) => (
+          <li key={p.id + "-" + p.pkmnName}>
+            <Pkmn pkmn={p} reveal={true} />
+          </li>
+        ))}
+      </ul>
     </>
   );
 };
