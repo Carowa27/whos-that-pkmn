@@ -12,10 +12,14 @@ import {
   getSpecificPkmnDexEntry,
 } from "../api/getPkmn";
 
-import type { pkmnFromGen } from "../types/pkmn";
+import type { pkmn, pkmnFromGen } from "../types/pkmn";
 import type { GameState } from "../types/game";
 
-export const Game = () => {
+interface GameProps {
+  setCorrectGuesses: React.Dispatch<React.SetStateAction<pkmn[]>>;
+}
+
+export const Game = ({ setCorrectGuesses }: GameProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [gameState, setGameState] = useState<GameState>({
     alternatives: [],
@@ -114,6 +118,7 @@ export const Game = () => {
           ...prevState,
           guess: "correct",
         }));
+        setCorrectGuesses((prevState) => [...prevState, gameState.correct]);
       } else {
         setGameState((prevState) => ({
           ...prevState,
