@@ -4,8 +4,12 @@ import { Nav } from "./components/Nav";
 import { Game } from "./pages/Game";
 import { PkmnList } from "./pages/PkmnList";
 import { Home } from "./pages/Home";
+import { useState } from "react";
+import type { pkmn } from "./types/pkmn";
 
 function App() {
+  const [correctGuesses, setCorrectGuesses] = useState<pkmn[]>([]);
+
   return (
     <div className="page-wrapper">
       <BrowserRouter>
@@ -14,11 +18,14 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route
             path="/game/:gen/:clueType/:alternativeType"
-            element={<Game />}
+            element={<Game setCorrectGuesses={setCorrectGuesses} />}
           />
-          <Route path="/correct-guesses" element={<PkmnList />} />
+          <Route
+            path="/correct-guesses"
+            element={<PkmnList correctGuesses={correctGuesses} />}
+          />
         </Routes>
-      </BrowserRouter>{" "}
+      </BrowserRouter>
     </div>
   );
 }

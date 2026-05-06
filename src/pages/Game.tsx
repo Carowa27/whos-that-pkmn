@@ -6,42 +6,25 @@ import { PkmnGuessInput } from "../components/PkmnGuessInput";
 import { NewGameBtns } from "../components/NewGameBtns";
 import { Loading } from "../components/Loading";
 
-import {
-  getPkmnFromGeneration,
-  getSpecificPkmn,
-  getSpecificPkmnDexEntry,
-} from "../api/getPkmn";
-
-import type { pkmnFromGen } from "../types/pkmn";
+import type { pkmn } from "../types/pkmn";
 import type { GameState } from "../types/game";
+import { Header } from "../components/Header";
+import { getGenIds, getPkmnObject } from "../functions/gameFns";
 
-export const Game = () => {
+interface GameProps {
+  setCorrectGuesses: React.Dispatch<React.SetStateAction<pkmn[]>>;
+}
+
+export const Game = ({ setCorrectGuesses }: GameProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [gameState, setGameState] = useState<GameState>({
     alternatives: [],
-    correct: {
-      id: 0,
-      pkmnName: "",
-      dexEntries: [
-        {
-          flavor_text: "",
-
-          language: {
-            name: "",
-            url: "",
-          },
-
-          version: {
-            name: "",
-            url: "",
-          },
-        },
-      ],
-    },
+    correct: null,
     guess: "",
     reveal: false,
   });
   const { gen, clueType, alternativeType } = useParams();
+  const correct = gameState.correct;
 
   const newGame = async () => {
     setIsLoading(true);
@@ -51,27 +34,17 @@ export const Game = () => {
 
       if (gen !== "nat" && gen !== undefined) {
         const generation = Number(gen.replace("gen", ""));
-        const pkmnFromGen = await getPkmnFromGeneration(generation);
-
-        const ids = pkmnFromGen
-          .map((p: pkmnFromGen) => {
-            const match = p.url.match(/pokemon-species\/(\d+)\//);
-            return match ? Number(match[1]) : null;
-          })
-          .filter((id: number) => id !== null);
-
-        low = Math.min(...ids);
-        high = Math.max(...ids);
+        const genIds = await getGenIds(generation);
+        low = genIds.low;
+        high = genIds.high;
       }
       const ids = getRandomNumbers(low, high);
       resetGame();
 
-      const fetchFn =
-        clueType === "img" ? getSpecificPkmn : getSpecificPkmnDexEntry;
       const [p0, p1, p2] = await Promise.all([
-        fetchFn(ids[0]),
-        fetchFn(ids[1]),
-        fetchFn(ids[2]),
+        getPkmnObject(ids[0]),
+        getPkmnObject(ids[1]),
+        getPkmnObject(ids[2]),
       ]);
       const correct = p1;
       const alternatives = [p0, p1, p2].sort(() => Math.random() - 0.5);
@@ -84,7 +57,7 @@ export const Game = () => {
     } finally {
       setTimeout(() => {
         setIsLoading(false);
-      }, 1000);
+      }, 450);
     }
   };
 
@@ -97,35 +70,21 @@ export const Game = () => {
   const resetGame = () => {
     setGameState({
       alternatives: [],
-      correct: {
-        id: 0,
-        pkmnName: "",
-        dexEntries: [
-          {
-            flavor_text: "",
-
-            language: {
-              name: "",
-              url: "",
-            },
-
-            version: {
-              name: "",
-              url: "",
-            },
-          },
-        ],
-      },
+      correct: null,
       guess: "",
       reveal: false,
     });
   };
 
   const getRandomNumbers = (low: number, high: number) => {
-    const ids = Array.from({ length: high - low + 1 }, (_, i) => i + low)
-      .filter((id) => id !== gameState.correct.id)
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 3);
+    const ids = correct
+      ? Array.from({ length: high - low + 1 }, (_, i) => i + low)
+          .filter((id) => id !== correct.id)
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 3)
+      : Array.from({ length: high - low + 1 }, (_, i) => i + low)
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 3);
     return ids;
   };
 
@@ -135,41 +94,37 @@ export const Game = () => {
       reveal: true,
     }));
     if (alternativeType === "multiple") {
-      if (gameState.correct && e.target.value === gameState.correct.pkmnName) {
-        setGameState((prevState) => ({
-          ...prevState,
-          guess: "correct",
-        }));
+      if (!correct) return;
+
+      if (e.target.value === correct.pkmnName) {
+        setGameState((prev) => ({ ...prev, guess: "correct" }));
+        setCorrectGuesses((prev) => [...prev, correct]);
       } else {
-        setGameState((prevState) => ({
-          ...prevState,
-          guess: "wrong",
-        }));
+        setGameState((prev) => ({ ...prev, guess: "wrong" }));
       }
     } else {
       console.log(e.target.value);
     }
   };
-
   return (
     <>
       <div id="game-header">
-        <h1>Who's that Pkmn?</h1>
-        {gameState.guess === "correct" && gameState.correct && (
+        <Header />
+        {gameState.guess === "correct" && correct && (
           <h2 className="guess-header">
             <span id="correct">Correct!</span>
             <br /> It is{" "}
-            {gameState.correct.pkmnName.charAt(0).toUpperCase() +
-              gameState.correct.pkmnName.slice(1)}
+            {correct.pkmnName.charAt(0).toUpperCase() +
+              correct.pkmnName.slice(1)}
             !
           </h2>
         )}
-        {gameState.guess === "wrong" && gameState.correct && (
+        {gameState.guess === "wrong" && correct && (
           <h2 className="guess-header">
             <span id="wrong">Wrong!</span>
             <br /> It is{" "}
-            {gameState.correct.pkmnName.charAt(0).toUpperCase() +
-              gameState.correct.pkmnName.slice(1)}
+            {correct.pkmnName.charAt(0).toUpperCase() +
+              correct.pkmnName.slice(1)}
             !
           </h2>
         )}
@@ -177,11 +132,11 @@ export const Game = () => {
       {isLoading && <Loading />}
       {!isLoading &&
         gameState.alternatives.length !== 0 &&
-        gameState.correct !== null && (
+        correct !== null && (
           <>
             <PkmnClue
               typeOfClue={clueType}
-              pkmn={gameState.correct}
+              pkmn={correct}
               reveal={gameState.reveal}
             />
             {gameState.guess === "" ? (
