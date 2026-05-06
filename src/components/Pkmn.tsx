@@ -1,7 +1,7 @@
-import type { pkmnWSprite } from "../types/pkmn";
+import type { pkmn } from "../types/pkmn";
 
 interface IPkmnProps {
-  pkmn: pkmnWSprite;
+  pkmn: pkmn;
   reveal: boolean;
 }
 export const Pkmn = ({ pkmn, reveal }: IPkmnProps) => {

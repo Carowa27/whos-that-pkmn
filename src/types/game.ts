@@ -1,8 +1,8 @@
-import type { pkmnWDex, pkmnWSprite } from "./pkmn";
+import type { pkmn } from "./pkmn";
 
 export interface GameState {
-  alternatives: (pkmnWSprite | pkmnWDex)[];
-  correct: pkmnWSprite | pkmnWDex;
+  alternatives: pkmn[];
+  correct: pkmn;
   guess: "wrong" | "correct" | "";
   reveal: boolean;
 }
