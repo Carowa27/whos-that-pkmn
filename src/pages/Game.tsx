@@ -6,12 +6,10 @@ import { PkmnGuessInput } from "../components/PkmnGuessInput";
 import { NewGameBtns } from "../components/NewGameBtns";
 import { Loading } from "../components/Loading";
 
-import { getSpecificPkmn, getSpecificPkmnDexEntry } from "../api/getPkmn";
-
 import type { pkmn } from "../types/pkmn";
 import type { GameState } from "../types/game";
 import { Header } from "../components/Header";
-import { getGenIds } from "../functions";
+import { getGenIds, getPkmnObject } from "../functions/functions";
 
 interface GameProps {
   setCorrectGuesses: React.Dispatch<React.SetStateAction<pkmn[]>>;
@@ -47,12 +45,10 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
       const ids = getRandomNumbers(low, high);
       resetGame();
 
-      const fetchFn =
-        clueType === "img" ? getSpecificPkmn : getSpecificPkmnDexEntry;
       const [p0, p1, p2] = await Promise.all([
-        fetchFn(ids[0]),
-        fetchFn(ids[1]),
-        fetchFn(ids[2]),
+        getPkmnObject(ids[0]),
+        getPkmnObject(ids[1]),
+        getPkmnObject(ids[2]),
       ]);
       const correct = p1;
       const alternatives = [p0, p1, p2].sort(() => Math.random() - 0.5);
@@ -108,11 +104,8 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
           ...prevState,
           guess: "correct",
         }));
-        if (gameState.correct.sprites === null) {
-          getSprites(gameState.correct.id);
-        } else {
-          setCorrectGuesses((prev) => [...prev, gameState.correct]);
-        }
+
+        setCorrectGuesses((prev) => [...prev, gameState.correct]);
       } else {
         setGameState((prevState) => ({
           ...prevState,
@@ -122,16 +115,6 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
     } else {
       console.log(e.target.value);
     }
-  };
-  const getSprites = async (id: number) => {
-    const pkmnWSprites = await getSpecificPkmn(id);
-    setCorrectGuesses((prev) => [
-      ...prev,
-      {
-        ...gameState.correct,
-        sprites: pkmnWSprites.sprites,
-      },
-    ]);
   };
   return (
     <>

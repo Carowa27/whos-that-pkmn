@@ -8,7 +8,7 @@ interface IPkmnClueProps {
 }
 
 export const PkmnClue = ({ typeOfClue, pkmn, reveal }: IPkmnClueProps) => {
-  if (pkmn.dexEntries !== null) {
+  if (typeOfClue === "dex") {
     const textTrim = (text: string) => {
       const trimmedText = text.replace(/\f/g, " ").trim().split("\n").join(" ");
       return trimmedText;

@@ -7,8 +7,6 @@ interface ListPageProps {
 }
 
 export const PkmnList = ({ correctGuesses }: ListPageProps) => {
-  console.log(correctGuesses);
-
   return (
     <>
       <Header />
