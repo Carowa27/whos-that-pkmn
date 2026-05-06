@@ -25,7 +25,7 @@ function App() {
             element={<PkmnList correctGuesses={correctGuesses} />}
           />
         </Routes>
-      </BrowserRouter>{" "}
+      </BrowserRouter>
     </div>
   );
 }
