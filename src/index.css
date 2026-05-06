@@ -186,8 +186,11 @@ button,
   background-color: var(--accent-border);
   color: var(--text-h);
 }
-button:disabled {
+button:disabled,
+.button:disabled,
+.button:has(input:disabled) {
   background-color: var(--shadow);
+  color: var(--accent-bg);
 }
 #pkmn-guess-img-wrapper {
   display: flex;

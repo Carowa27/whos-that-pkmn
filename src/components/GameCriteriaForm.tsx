@@ -61,7 +61,7 @@ export const GameCriteriaForm = () => {
       <div id="clue-section">
         <label className="button">
           <input type="radio" name="clueType" value="img" />
-          Img
+          Image
         </label>
 
         <label className="button">
@@ -77,7 +77,13 @@ export const GameCriteriaForm = () => {
         </label>
 
         <label className="button">
-          <input type="radio" name="alternativeType" value="text" />
+          <input
+            type="radio"
+            name="alternativeType"
+            value="text"
+            disabled
+            title="not added yet"
+          />
           Text input
         </label>
       </div>
