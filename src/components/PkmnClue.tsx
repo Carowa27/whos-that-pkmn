@@ -2,7 +2,7 @@ import type { pkmnWDex, pkmnWSprite } from "../types/pkmn";
 import { Pkmn } from "./Pkmn";
 
 interface IPkmnClueProps {
-  typeOfClue: "img" | "dexEntry";
+  typeOfClue: string | undefined;
   pkmn: pkmnWSprite | pkmnWDex;
   reveal: boolean;
 }

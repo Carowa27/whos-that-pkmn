@@ -12,7 +12,10 @@ function App() {
         <Nav />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/game" element={<Game />} />
+          <Route
+            path="/game/:gen/:clueType/:alternativeType"
+            element={<Game />}
+          />
           <Route path="/correct-guesses" element={<PkmnList />} />
         </Routes>
       </BrowserRouter>{" "}

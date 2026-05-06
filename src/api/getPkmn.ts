@@ -6,11 +6,7 @@ import { apiClient } from "./axiosConfig";
 // get pkmn by gen
 //https://pokeapi.co/api/v2/generation/2
 
-export const getSpecificPkmn = async (
-  id: number,
-  setIsLoading: (value: boolean) => void,
-) => {
-  setIsLoading(true);
+export const getSpecificPkmn = async (id: number) => {
   try {
     const response = await apiClient.get(`/pokemon/${id}`);
     const pkmn = {
@@ -25,18 +21,10 @@ export const getSpecificPkmn = async (
       `Failed to fetch posts: ${error instanceof Error ? error.message : String(error)}`,
       { cause: error },
     );
-  } finally {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
   }
 };
 
-export const getSpecificPkmnDexEntry = async (
-  id: number,
-  setIsLoading: (value: boolean) => void,
-) => {
-  setIsLoading(true);
+export const getSpecificPkmnDexEntry = async (id: number) => {
   try {
     const response = await apiClient.get(`/pokemon-species/${id}`);
     const pkmn = {
@@ -51,18 +39,10 @@ export const getSpecificPkmnDexEntry = async (
       `Failed to fetch posts: ${error instanceof Error ? error.message : String(error)}`,
       { cause: error },
     );
-  } finally {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
   }
 };
 
-export const getPkmnFromGeneration = async (
-  gen: number,
-  setIsLoading: (value: boolean) => void,
-) => {
-  setIsLoading(true);
+export const getPkmnFromGeneration = async (gen: number) => {
   try {
     const response = await apiClient.get(`/generation/${gen}`);
     return response.data.pokemon_species;
@@ -71,7 +51,5 @@ export const getPkmnFromGeneration = async (
       `Failed to fetch posts: ${error instanceof Error ? error.message : String(error)}`,
       { cause: error },
     );
-  } finally {
-    setIsLoading(false);
   }
 };

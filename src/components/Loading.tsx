@@ -8,7 +8,7 @@ export const Loading = () => {
         src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
         alt="pokeball loader animation"
         id="spinner"
-        className={`${location === "/game" ? "throw-animation" : "spin-animation"}`}
+        className={`${location.includes("/game") ? "throw-animation" : "spin-animation"}`}
       />
     </div>
   );
