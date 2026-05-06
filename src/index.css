@@ -110,10 +110,10 @@ code {
   background: var(--code-bg);
 }
 .page-wrapper {
-  min-height: calc(100vh - 80px);
+  min-height: calc(100vh - 72px - 2rem);
   min-width: 300px;
   max-width: 500px;
-  padding: 2rem 1rem 0 1rem;
+  margin: 2rem 1rem 72px 1rem;
   display: flex;
   flex-direction: column;
 }
@@ -315,7 +315,7 @@ input[type="radio"] {
 
 #pkmn-list {
   margin: 0;
-  padding: 0;
+  padding: 0 0 1rem 0;
 
   display: flex;
   flex-wrap: wrap;
