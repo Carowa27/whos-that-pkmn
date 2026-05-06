@@ -28,6 +28,8 @@ export const PkmnClue = ({ typeOfClue, pkmn, reveal }: IPkmnClueProps) => {
   }
 
   return (
-    <div>{typeOfClue === "img" && <Pkmn pkmn={pkmn} reveal={reveal} />}</div>
+    <div id="pkmn-guess-img-wrapper">
+      {typeOfClue === "img" && <Pkmn pkmn={pkmn} reveal={reveal} />}
+    </div>
   );
 };

@@ -17,6 +17,7 @@
 
   --pkmn-image-color: brightness(1);
   --pkmn-image-guess: brightness(0);
+  --pkmn-image-filter: var(--pkmn-image-guess);
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
@@ -188,15 +189,18 @@ button,
 button:disabled {
   background-color: var(--shadow);
 }
+#pkmn-guess-img-wrapper {
+  display: flex;
+  justify-content: center;
+}
 .pkmn-guess-img {
-  max-height: 50vh;
-  max-width: 100%;
+  max-height: 35vh;
+  /* max-width: 100%; */
   height: auto;
   width: auto;
   object-fit: contain;
 }
 #mystery {
-  --pkmn-image-filter: var(--pkmn-image-guess);
   filter: var(--pkmn-image-filter);
 }
 #mystery.revealed {
