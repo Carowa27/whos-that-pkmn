@@ -19,16 +19,12 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [gameState, setGameState] = useState<GameState>({
     alternatives: [],
-    correct: {
-      id: 0,
-      pkmnName: "",
-      dexEntries: null,
-      sprites: null,
-    },
+    correct: null,
     guess: "",
     reveal: false,
   });
   const { gen, clueType, alternativeType } = useParams();
+  const correct = gameState.correct;
 
   const newGame = async () => {
     setIsLoading(true);
@@ -74,22 +70,21 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
   const resetGame = () => {
     setGameState({
       alternatives: [],
-      correct: {
-        id: 0,
-        pkmnName: "",
-        dexEntries: null,
-        sprites: null,
-      },
+      correct: null,
       guess: "",
       reveal: false,
     });
   };
 
   const getRandomNumbers = (low: number, high: number) => {
-    const ids = Array.from({ length: high - low + 1 }, (_, i) => i + low)
-      .filter((id) => id !== gameState.correct.id)
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 3);
+    const ids = correct
+      ? Array.from({ length: high - low + 1 }, (_, i) => i + low)
+          .filter((id) => id !== correct.id)
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 3)
+      : Array.from({ length: high - low + 1 }, (_, i) => i + low)
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 3);
     return ids;
   };
 
@@ -99,18 +94,13 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
       reveal: true,
     }));
     if (alternativeType === "multiple") {
-      if (gameState.correct && e.target.value === gameState.correct.pkmnName) {
-        setGameState((prevState) => ({
-          ...prevState,
-          guess: "correct",
-        }));
+      if (!correct) return;
 
-        setCorrectGuesses((prev) => [...prev, gameState.correct]);
+      if (e.target.value === correct.pkmnName) {
+        setGameState((prev) => ({ ...prev, guess: "correct" }));
+        setCorrectGuesses((prev) => [...prev, correct]);
       } else {
-        setGameState((prevState) => ({
-          ...prevState,
-          guess: "wrong",
-        }));
+        setGameState((prev) => ({ ...prev, guess: "wrong" }));
       }
     } else {
       console.log(e.target.value);
@@ -120,21 +110,21 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
     <>
       <div id="game-header">
         <Header />
-        {gameState.guess === "correct" && gameState.correct && (
+        {gameState.guess === "correct" && correct && (
           <h2 className="guess-header">
             <span id="correct">Correct!</span>
             <br /> It is{" "}
-            {gameState.correct.pkmnName.charAt(0).toUpperCase() +
-              gameState.correct.pkmnName.slice(1)}
+            {correct.pkmnName.charAt(0).toUpperCase() +
+              correct.pkmnName.slice(1)}
             !
           </h2>
         )}
-        {gameState.guess === "wrong" && gameState.correct && (
+        {gameState.guess === "wrong" && correct && (
           <h2 className="guess-header">
             <span id="wrong">Wrong!</span>
             <br /> It is{" "}
-            {gameState.correct.pkmnName.charAt(0).toUpperCase() +
-              gameState.correct.pkmnName.slice(1)}
+            {correct.pkmnName.charAt(0).toUpperCase() +
+              correct.pkmnName.slice(1)}
             !
           </h2>
         )}
@@ -142,11 +132,11 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
       {isLoading && <Loading />}
       {!isLoading &&
         gameState.alternatives.length !== 0 &&
-        gameState.correct !== null && (
+        correct !== null && (
           <>
             <PkmnClue
               typeOfClue={clueType}
-              pkmn={gameState.correct}
+              pkmn={correct}
               reveal={gameState.reveal}
             />
             {gameState.guess === "" ? (

@@ -8,7 +8,7 @@ import { useState } from "react";
 import type { pkmn } from "./types/pkmn";
 
 function App() {
-  const [correctGuesses, setCorrectGuesses] = useState([]);
+  const [correctGuesses, setCorrectGuesses] = useState<pkmn[]>([]);
 
   return (
     <div className="page-wrapper">
@@ -18,13 +18,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route
             path="/game/:gen/:clueType/:alternativeType"
-            element={
-              <Game
-                setCorrectGuesses={(newList: pkmn[]) =>
-                  setCorrectGuesses(newList)
-                }
-              />
-            }
+            element={<Game setCorrectGuesses={setCorrectGuesses} />}
           />
           <Route
             path="/correct-guesses"

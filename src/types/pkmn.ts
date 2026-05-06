@@ -5,8 +5,8 @@ export interface pkmnFromGen {
 export interface pkmn {
   id: number;
   pkmnName: string;
-  dexEntries: FlavorTextEntry[] | null;
-  sprites: PokemonSprites | null;
+  dexEntries: FlavorTextEntry[];
+  sprites: PokemonSprites;
 }
 interface FlavorTextEntry {
   flavor_text: string;
