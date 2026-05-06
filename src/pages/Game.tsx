@@ -118,7 +118,11 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
           ...prevState,
           guess: "correct",
         }));
-        setCorrectGuesses((prevState) => [...prevState, gameState.correct]);
+        if (gameState.correct.sprites === null) {
+          getSprites(gameState.correct.id);
+        } else {
+          setCorrectGuesses((prev) => [...prev, gameState.correct]);
+        }
       } else {
         setGameState((prevState) => ({
           ...prevState,
@@ -129,7 +133,16 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
       console.log(e.target.value);
     }
   };
-
+  const getSprites = async (id: number) => {
+    const pkmnWSprites = await getSpecificPkmn(id);
+    setCorrectGuesses((prev) => [
+      ...prev,
+      {
+        ...gameState.correct,
+        sprites: pkmnWSprites.sprites,
+      },
+    ]);
+  };
   return (
     <>
       <div id="game-header">
