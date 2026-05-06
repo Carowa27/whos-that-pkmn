@@ -12,6 +12,7 @@ export const getSpecificPkmn = async (id: number) => {
     const pkmn = {
       id: response.data.order,
       pkmnName: response.data.name,
+      dexEntries: null,
       sprites: response.data.sprites,
     };
 
@@ -31,6 +32,7 @@ export const getSpecificPkmnDexEntry = async (id: number) => {
       id: response.data.order,
       pkmnName: response.data.name,
       dexEntries: response.data.flavor_text_entries,
+      sprites: null,
     };
 
     return pkmn;

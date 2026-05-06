@@ -22,21 +22,8 @@ export const Game = () => {
     correct: {
       id: 0,
       pkmnName: "",
-      dexEntries: [
-        {
-          flavor_text: "",
-
-          language: {
-            name: "",
-            url: "",
-          },
-
-          version: {
-            name: "",
-            url: "",
-          },
-        },
-      ],
+      dexEntries: null,
+      sprites: null,
     },
     guess: "",
     reveal: false,
@@ -100,21 +87,8 @@ export const Game = () => {
       correct: {
         id: 0,
         pkmnName: "",
-        dexEntries: [
-          {
-            flavor_text: "",
-
-            language: {
-              name: "",
-              url: "",
-            },
-
-            version: {
-              name: "",
-              url: "",
-            },
-          },
-        ],
+        dexEntries: null,
+        sprites: null,
       },
       guess: "",
       reveal: false,
