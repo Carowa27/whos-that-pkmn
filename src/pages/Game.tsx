@@ -113,7 +113,7 @@ export const Game = ({ correctGuesses, setCorrectGuesses }: GameProps) => {
         <Header />
         {gameState.guess === "correct" && correct && (
           <h2 className="guess-header">
-            <span id="correct">Correct!</span>
+            <span className="correct">Correct!</span>
             <br /> It is{" "}
             {correct.pkmnName.charAt(0).toUpperCase() +
               correct.pkmnName.slice(1)}
@@ -122,7 +122,7 @@ export const Game = ({ correctGuesses, setCorrectGuesses }: GameProps) => {
         )}
         {gameState.guess === "wrong" && correct && (
           <h2 className="guess-header">
-            <span id="wrong">Wrong!</span>
+            <span className="wrong">Wrong!</span>
             <br /> It is{" "}
             {correct.pkmnName.charAt(0).toUpperCase() +
               correct.pkmnName.slice(1)}
@@ -132,8 +132,9 @@ export const Game = ({ correctGuesses, setCorrectGuesses }: GameProps) => {
       </div>
       {isLoading && <Loading />}
       {!isLoading && correct === undefined && (
-        <h3 className="center">
-          Congratulations you have guessed all correct!
+        <h3 className="center correct">
+          Congratulations!
+          <br /> You have guessed all Correct!
         </h3>
       )}
       {!isLoading &&

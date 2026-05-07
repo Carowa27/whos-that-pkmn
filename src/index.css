@@ -233,10 +233,10 @@ input[type="radio"] {
 .guess-header {
   text-align: center;
 }
-#correct {
+.correct {
   color: green;
 }
-#wrong {
+.wrong {
   color: red;
 }
 #new-game-wrapper {
