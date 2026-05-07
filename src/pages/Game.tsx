@@ -48,7 +48,6 @@ export const Game = ({ correctGuesses, setCorrectGuesses }: GameProps) => {
       const correct = alternatives[0];
 
       alternatives.sort(() => Math.random() - 0.5);
-      console.log(correct);
 
       setGameState((prevState) => ({
         ...prevState,
