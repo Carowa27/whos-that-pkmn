@@ -157,6 +157,9 @@ nav {
   transform: translateX(-50%);
   font-size: medium;
 }
+nav a {
+  color: var(--text-h);
+}
 a {
   text-decoration: none;
   color: var(--text);
@@ -191,6 +194,10 @@ button:disabled,
   background-color: var(--shadow);
   color: var(--accent-bg);
 }
+button a,
+.button a {
+  color: var(--text-h);
+}
 #correct-guess-wrapper {
   position: relative;
 }
@@ -199,6 +206,9 @@ button:disabled,
   bottom: -10px;
   right: -10px;
   z-index: 10;
+  padding: 0.2rem 0.5rem;
+  background-color: var(--accent);
+  border: var(--border) 1px solid;
 }
 #pkmn-guess-img-wrapper {
   display: flex;

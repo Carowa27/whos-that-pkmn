@@ -29,7 +29,7 @@ export const PkmnList = ({
               className="button icon-btn"
               onClick={() => removeGuessFromState(p)}
             >
-              &#xe020;
+              ✕
             </span>
           </li>
         ))}
