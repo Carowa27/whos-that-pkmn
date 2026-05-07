@@ -82,7 +82,10 @@ export const Game = ({ correctGuesses, setCorrectGuesses }: GameProps) => {
         alternatives: alternatives,
       }));
     } catch (error) {
-      setError({ error: true, msg: error.message });
+      setError({
+        error: true,
+        msg: error instanceof Error ? error.message : "Unknown error",
+      });
     } finally {
       setTimeout(() => {
         setIsLoading(false);
