@@ -85,15 +85,6 @@ export const Game = ({ correctGuesses, setCorrectGuesses }: GameProps) => {
       .filter((id) => !excludedIds.has(id))
       .sort(() => Math.random() - 0.5)
       .slice(0, 3);
-    // const ids = correct
-    //   ? Array.from({ length: high - low + 1 }, (_, i) => i + low)
-    //       .filter((id) => id !== correct.id)
-    //       .sort(() => Math.random() - 0.5)
-    //       .slice(0, 3)
-    //   : Array.from({ length: high - low + 1 }, (_, i) => i + low)
-    //       .sort(() => Math.random() - 0.5)
-    //       .slice(0, 3);
-    console.log(correctGuesses.length, ids);
 
     return ids;
   };
