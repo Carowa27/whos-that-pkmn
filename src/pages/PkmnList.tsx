@@ -31,8 +31,9 @@ export const PkmnList = ({
       </div>
       {correctGuesses.length === 0 ? (
         <p>
-          You dont have any correct guesses, go to <Link to={"/"}>Home</Link> to
-          specify how you wanna play to start your journey!
+          You dont have any correct guesses, <br />
+          go to <Link to={"/"}>Home</Link> to specify how you wanna play to
+          start your journey!
         </p>
       ) : (
         <ul id="pkmn-list">
