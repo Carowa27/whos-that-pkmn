@@ -10,7 +10,9 @@ export const GameCriteriaForm = () => {
     alternativeType: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLFormElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const target = e.target;
 
     if (!target.name) return;
@@ -24,26 +26,27 @@ export const GameCriteriaForm = () => {
   const handleGameCriterias = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
+    if (!isFormValid) return;
 
     navigate(
-      `/game/${formData.get("generation")}/${formData.get("clueType")}/${formData.get("alternativeType")}/`,
+      `/game/${formState.generation}/${formState.clueType}/${formState.alternativeType}/`,
     );
   };
 
-  const isFormValid =
-    formState.generation && formState.clueType && formState.alternativeType;
+  const isFormValid = Boolean(
+    formState.generation && formState.clueType && formState.alternativeType,
+  );
 
   return (
-    <form
-      onSubmit={handleGameCriterias}
-      onChange={handleChange}
-      id="game-criteria-form"
-    >
+    <form onSubmit={handleGameCriterias} id="game-criteria-form">
       <h4>Choose your game criterias:</h4>
 
-      <select name="generation" defaultValue="">
-        <option value="" disabled defaultChecked hidden>
+      <select
+        name="generation"
+        value={formState.generation}
+        onChange={handleChange}
+      >
+        <option value="" disabled hidden>
           Select Gen or All
         </option>
         <option value="nat">National PokeDex</option>
@@ -60,19 +63,37 @@ export const GameCriteriaForm = () => {
 
       <div id="clue-section">
         <label className="button">
-          <input type="radio" name="clueType" value="img" />
+          <input
+            type="radio"
+            name="clueType"
+            value="img"
+            checked={formState.clueType === "img"}
+            onChange={handleChange}
+          />
           Image
         </label>
 
         <label className="button">
-          <input type="radio" name="clueType" value="dex" />
+          <input
+            type="radio"
+            name="clueType"
+            value="dex"
+            checked={formState.clueType === "dex"}
+            onChange={handleChange}
+          />
           PokeDex entry
         </label>
       </div>
 
       <div id="answer-section">
         <label className="button">
-          <input type="radio" name="alternativeType" value="multiple" />
+          <input
+            type="radio"
+            name="alternativeType"
+            value="multiple"
+            checked={formState.alternativeType === "multiple"}
+            onChange={handleChange}
+          />
           Multiple choices
         </label>
 
@@ -83,6 +104,8 @@ export const GameCriteriaForm = () => {
             value="text"
             disabled
             title="not added yet"
+            checked={formState.alternativeType === "text"}
+            onChange={handleChange}
           />
           Text input
         </label>
