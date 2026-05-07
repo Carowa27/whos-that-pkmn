@@ -17,10 +17,18 @@ export const PkmnList = ({
       prev.filter((pkmn) => pkmn.id !== p.id),
     );
   };
+  const resetGuessesInState = () => {
+    setCorrectGuesses([]);
+  };
   return (
     <>
       <Header />
-      <h3>Your correct guesses</h3>
+      <div id="correct-head-wrapper">
+        <h3>Your correct guesses</h3>
+        <button id="reset-btn" onClick={() => resetGuessesInState()}>
+          reset
+        </button>
+      </div>
       {correctGuesses.length === 0 ? (
         <p>
           You dont have any correct guesses, go to <Link to={"/"}>Home</Link> to
