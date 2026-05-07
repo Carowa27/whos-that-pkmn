@@ -57,7 +57,7 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
     } finally {
       setTimeout(() => {
         setIsLoading(false);
-      }, 450);
+      }, 350);
     }
   };
 

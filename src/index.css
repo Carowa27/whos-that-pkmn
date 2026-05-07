@@ -17,7 +17,6 @@
 
   --pkmn-image-color: brightness(1);
   --pkmn-image-guess: brightness(0);
-  --pkmn-image-filter: var(--pkmn-image-guess);
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
@@ -204,7 +203,9 @@ button:disabled,
   object-fit: contain;
 }
 #mystery {
+  --pkmn-image-filter: var(--pkmn-image-guess);
   filter: var(--pkmn-image-filter);
+  animation: fadeIn 0.5s ease forwards;
 }
 #mystery.revealed {
   --pkmn-image-filter: var(--pkmn-image-color);
@@ -270,7 +271,7 @@ input[type="radio"] {
   text-align: justify;
   line-height: 1.6;
 }
-@keyframes spin-animation {
+@keyframes bounce-animation {
   0% {
     transform: rotate(0) translateY(0) scaleY(1);
   }
@@ -298,6 +299,17 @@ input[type="radio"] {
     transform: scale(1) rotate(360deg);
   }
 }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 #loader-wrapper {
   display: flex;
   height: 100%;
@@ -309,7 +321,7 @@ input[type="radio"] {
   margin-bottom: 10rem;
 }
 .spin-animation {
-  animation: spin-animation 1.5s linear infinite;
+  animation: bounce-animation 1.5s linear infinite;
 }
 .throw-animation {
   position: absolute;
@@ -317,7 +329,7 @@ input[type="radio"] {
   offset-rotate: 0deg;
   offset-anchor: center;
 
-  animation: throw-animation 0.5s ease-out forwards;
+  animation: throw-animation 0.4s ease-out forwards;
 }
 
 #pkmn-list {
