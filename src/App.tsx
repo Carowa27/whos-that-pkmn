@@ -27,7 +27,12 @@ function App() {
           />
           <Route
             path="/correct-guesses"
-            element={<PkmnList correctGuesses={correctGuesses} />}
+            element={
+              <PkmnList
+                correctGuesses={correctGuesses}
+                setCorrectGuesses={setCorrectGuesses}
+              />
+            }
           />
         </Routes>
       </BrowserRouter>

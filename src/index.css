@@ -191,6 +191,15 @@ button:disabled,
   background-color: var(--shadow);
   color: var(--accent-bg);
 }
+#correct-guess-wrapper {
+  position: relative;
+}
+#trash-icon.icon-btn {
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  z-index: 10;
+}
 #pkmn-guess-img-wrapper {
   display: flex;
   justify-content: center;
