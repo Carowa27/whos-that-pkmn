@@ -13,9 +13,10 @@ import { getGenIds, getPkmnObject } from "../functions/gameFns";
 
 interface GameProps {
   setCorrectGuesses: React.Dispatch<React.SetStateAction<pkmn[]>>;
+  correctGuesses: pkmn[];
 }
 
-export const Game = ({ setCorrectGuesses }: GameProps) => {
+export const Game = ({ correctGuesses, setCorrectGuesses }: GameProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [gameState, setGameState] = useState<GameState>({
     alternatives: [],
@@ -41,13 +42,12 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
       const ids = getRandomNumbers(low, high);
       resetGame();
 
-      const [p0, p1, p2] = await Promise.all([
-        getPkmnObject(ids[0]),
-        getPkmnObject(ids[1]),
-        getPkmnObject(ids[2]),
-      ]);
-      const correct = p1;
-      const alternatives = [p0, p1, p2].sort(() => Math.random() - 0.5);
+      const alternatives = await Promise.all(
+        ids.map((id) => getPkmnObject(id)),
+      );
+      const correct = alternatives[0];
+
+      alternatives.sort(() => Math.random() - 0.5);
 
       setGameState((prevState) => ({
         ...prevState,
@@ -77,14 +77,14 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
   };
 
   const getRandomNumbers = (low: number, high: number) => {
-    const ids = correct
-      ? Array.from({ length: high - low + 1 }, (_, i) => i + low)
-          .filter((id) => id !== correct.id)
-          .sort(() => Math.random() - 0.5)
-          .slice(0, 3)
-      : Array.from({ length: high - low + 1 }, (_, i) => i + low)
-          .sort(() => Math.random() - 0.5)
-          .slice(0, 3);
+    const excludedIds = new Set(
+      correctGuesses.length !== 0 ? correctGuesses.map((p) => p.id) : [],
+    );
+    const ids = Array.from({ length: high - low + 1 }, (_, i) => i + low)
+      .filter((id) => !excludedIds.has(id))
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3);
+
     return ids;
   };
 
@@ -112,7 +112,7 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
         <Header />
         {gameState.guess === "correct" && correct && (
           <h2 className="guess-header">
-            <span id="correct">Correct!</span>
+            <span className="correct">Correct!</span>
             <br /> It is{" "}
             {correct.pkmnName.charAt(0).toUpperCase() +
               correct.pkmnName.slice(1)}
@@ -121,7 +121,7 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
         )}
         {gameState.guess === "wrong" && correct && (
           <h2 className="guess-header">
-            <span id="wrong">Wrong!</span>
+            <span className="wrong">Wrong!</span>
             <br /> It is{" "}
             {correct.pkmnName.charAt(0).toUpperCase() +
               correct.pkmnName.slice(1)}
@@ -130,6 +130,12 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
         )}
       </div>
       {isLoading && <Loading />}
+      {!isLoading && correct === undefined && (
+        <h3 className="center correct">
+          Congratulations!
+          <br /> You have guessed all Correct!
+        </h3>
+      )}
       {!isLoading &&
         gameState.alternatives.length !== 0 &&
         correct !== null && (

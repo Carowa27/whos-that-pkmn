@@ -18,11 +18,21 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route
             path="/game/:gen/:clueType/:alternativeType"
-            element={<Game setCorrectGuesses={setCorrectGuesses} />}
+            element={
+              <Game
+                setCorrectGuesses={setCorrectGuesses}
+                correctGuesses={correctGuesses}
+              />
+            }
           />
           <Route
             path="/correct-guesses"
-            element={<PkmnList correctGuesses={correctGuesses} />}
+            element={
+              <PkmnList
+                correctGuesses={correctGuesses}
+                setCorrectGuesses={setCorrectGuesses}
+              />
+            }
           />
         </Routes>
       </BrowserRouter>
