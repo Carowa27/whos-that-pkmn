@@ -182,6 +182,8 @@ nav a {
 a {
   text-decoration: none;
   color: var(--text);
+  font-weight: bold;
+  cursor: pointer;
 }
 select {
   border: 1px solid var(--border);
