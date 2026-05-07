@@ -347,3 +347,7 @@ input[type="radio"] {
 #pkmn-list img {
   width: 5rem;
 }
+
+.center {
+  text-align: center;
+}

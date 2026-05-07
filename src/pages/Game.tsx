@@ -13,9 +13,10 @@ import { getGenIds, getPkmnObject } from "../functions/gameFns";
 
 interface GameProps {
   setCorrectGuesses: React.Dispatch<React.SetStateAction<pkmn[]>>;
+  correctGuesses: pkmn[];
 }
 
-export const Game = ({ setCorrectGuesses }: GameProps) => {
+export const Game = ({ correctGuesses, setCorrectGuesses }: GameProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [gameState, setGameState] = useState<GameState>({
     alternatives: [],
@@ -41,13 +42,13 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
       const ids = getRandomNumbers(low, high);
       resetGame();
 
-      const [p0, p1, p2] = await Promise.all([
-        getPkmnObject(ids[0]),
-        getPkmnObject(ids[1]),
-        getPkmnObject(ids[2]),
-      ]);
-      const correct = p1;
-      const alternatives = [p0, p1, p2].sort(() => Math.random() - 0.5);
+      const alternatives = await Promise.all(
+        ids.map((id) => getPkmnObject(id)),
+      );
+      const correct = alternatives[0];
+
+      alternatives.sort(() => Math.random() - 0.5);
+      console.log(correct);
 
       setGameState((prevState) => ({
         ...prevState,
@@ -77,14 +78,23 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
   };
 
   const getRandomNumbers = (low: number, high: number) => {
-    const ids = correct
-      ? Array.from({ length: high - low + 1 }, (_, i) => i + low)
-          .filter((id) => id !== correct.id)
-          .sort(() => Math.random() - 0.5)
-          .slice(0, 3)
-      : Array.from({ length: high - low + 1 }, (_, i) => i + low)
-          .sort(() => Math.random() - 0.5)
-          .slice(0, 3);
+    const excludedIds = new Set(
+      correctGuesses.length !== 0 ? correctGuesses.map((p) => p.id) : [],
+    );
+    const ids = Array.from({ length: high - low + 1 }, (_, i) => i + low)
+      .filter((id) => !excludedIds.has(id))
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3);
+    // const ids = correct
+    //   ? Array.from({ length: high - low + 1 }, (_, i) => i + low)
+    //       .filter((id) => id !== correct.id)
+    //       .sort(() => Math.random() - 0.5)
+    //       .slice(0, 3)
+    //   : Array.from({ length: high - low + 1 }, (_, i) => i + low)
+    //       .sort(() => Math.random() - 0.5)
+    //       .slice(0, 3);
+    console.log(correctGuesses.length, ids);
+
     return ids;
   };
 
@@ -130,6 +140,11 @@ export const Game = ({ setCorrectGuesses }: GameProps) => {
         )}
       </div>
       {isLoading && <Loading />}
+      {!isLoading && correct === undefined && (
+        <h3 className="center">
+          Congratulations you have guessed all correct!
+        </h3>
+      )}
       {!isLoading &&
         gameState.alternatives.length !== 0 &&
         correct !== null && (
