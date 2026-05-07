@@ -18,6 +18,11 @@ interface GameProps {
 
 export const Game = ({ correctGuesses, setCorrectGuesses }: GameProps) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<{ error: boolean; msg: string }>({
+    error: false,
+    msg: "",
+  });
+
   const [gameState, setGameState] = useState<GameState>({
     alternatives: [],
     correct: null,
@@ -27,8 +32,30 @@ export const Game = ({ correctGuesses, setCorrectGuesses }: GameProps) => {
   const { gen, clueType, alternativeType } = useParams();
   const correct = gameState.correct;
 
+  const resetGame = () => {
+    setGameState({
+      alternatives: [],
+      correct: null,
+      guess: "",
+      reveal: false,
+    });
+  };
+
+  const getRandomNumbers = (low: number, high: number) => {
+    const excludedIds = new Set(
+      correctGuesses.length !== 0 ? correctGuesses.map((p) => p.id) : [],
+    );
+    const ids = Array.from({ length: high - low + 1 }, (_, i) => i + low)
+      .filter((id) => !excludedIds.has(id))
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3);
+
+    return ids;
+  };
+
   const newGame = async () => {
     setIsLoading(true);
+    setError({ error: false, msg: "" });
     try {
       let low = 1;
       let high = 1025;
@@ -54,6 +81,8 @@ export const Game = ({ correctGuesses, setCorrectGuesses }: GameProps) => {
         correct: correct,
         alternatives: alternatives,
       }));
+    } catch (error) {
+      setError({ error: true, msg: error.message });
     } finally {
       setTimeout(() => {
         setIsLoading(false);
@@ -66,27 +95,6 @@ export const Game = ({ correctGuesses, setCorrectGuesses }: GameProps) => {
     newGame();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const resetGame = () => {
-    setGameState({
-      alternatives: [],
-      correct: null,
-      guess: "",
-      reveal: false,
-    });
-  };
-
-  const getRandomNumbers = (low: number, high: number) => {
-    const excludedIds = new Set(
-      correctGuesses.length !== 0 ? correctGuesses.map((p) => p.id) : [],
-    );
-    const ids = Array.from({ length: high - low + 1 }, (_, i) => i + low)
-      .filter((id) => !excludedIds.has(id))
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 3);
-
-    return ids;
-  };
 
   const handleGuess = (e: ChangeEvent<HTMLFormElement, Element>) => {
     setGameState((prevState) => ({
@@ -108,54 +116,60 @@ export const Game = ({ correctGuesses, setCorrectGuesses }: GameProps) => {
   };
   return (
     <>
-      <div id="game-header">
-        <Header />
-        {gameState.guess === "correct" && correct && (
-          <h2 className="guess-header">
-            <span className="correct">Correct!</span>
-            <br /> It is{" "}
-            {correct.pkmnName.charAt(0).toUpperCase() +
-              correct.pkmnName.slice(1)}
-            !
-          </h2>
-        )}
-        {gameState.guess === "wrong" && correct && (
-          <h2 className="guess-header">
-            <span className="wrong">Wrong!</span>
-            <br /> It is{" "}
-            {correct.pkmnName.charAt(0).toUpperCase() +
-              correct.pkmnName.slice(1)}
-            !
-          </h2>
-        )}
-      </div>
-      {isLoading && <Loading />}
-      {!isLoading && correct === undefined && (
-        <h3 className="center correct">
-          Congratulations!
-          <br /> You have guessed all Correct!
-        </h3>
-      )}
-      {!isLoading &&
-        gameState.alternatives.length !== 0 &&
-        correct !== null && (
-          <>
-            <PkmnClue
-              typeOfClue={clueType}
-              pkmn={correct}
-              reveal={gameState.reveal}
-            />
-            {gameState.guess === "" ? (
-              <PkmnGuessInput
-                typeOfAnswer={alternativeType}
-                alternatives={gameState.alternatives}
-                handleGuess={(e) => handleGuess(e)}
-              />
-            ) : (
-              <NewGameBtns startNewGame={() => newGame()} />
+      {error.error ? (
+        <p>{error.msg}</p>
+      ) : (
+        <>
+          <div id="game-header">
+            <Header />
+            {gameState.guess === "correct" && correct && (
+              <h2 className="guess-header">
+                <span className="correct">Correct!</span>
+                <br /> It is{" "}
+                {correct.pkmnName.charAt(0).toUpperCase() +
+                  correct.pkmnName.slice(1)}
+                !
+              </h2>
             )}
-          </>
-        )}
+            {gameState.guess === "wrong" && correct && (
+              <h2 className="guess-header">
+                <span className="wrong">Wrong!</span>
+                <br /> It is{" "}
+                {correct.pkmnName.charAt(0).toUpperCase() +
+                  correct.pkmnName.slice(1)}
+                !
+              </h2>
+            )}
+          </div>
+          {isLoading && <Loading />}
+          {!isLoading && correct === undefined && (
+            <h3 className="center correct">
+              Congratulations!
+              <br /> You have guessed all Correct!
+            </h3>
+          )}
+          {!isLoading &&
+            gameState.alternatives.length !== 0 &&
+            correct !== null && (
+              <>
+                <PkmnClue
+                  typeOfClue={clueType}
+                  pkmn={correct}
+                  reveal={gameState.reveal}
+                />
+                {gameState.guess === "" ? (
+                  <PkmnGuessInput
+                    typeOfAnswer={alternativeType}
+                    alternatives={gameState.alternatives}
+                    handleGuess={(e) => handleGuess(e)}
+                  />
+                ) : (
+                  <NewGameBtns startNewGame={() => newGame()} />
+                )}
+              </>
+            )}
+        </>
+      )}
     </>
   );
 };
