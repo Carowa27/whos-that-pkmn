@@ -26,7 +26,7 @@ Planned features include text-based guessing, time attack mode, local high score
 
 ### API
 
-This project uses the ![pokeAPI](https://pokeapi.co/) as its data source.
+This project uses the [pokeAPI](https://pokeapi.co/) as its data source.
 All data is fetched directly from the API and is not owned or created by me.
 
 ## Commit message convention
