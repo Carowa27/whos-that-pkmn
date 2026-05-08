@@ -55,3 +55,26 @@ export const getPkmnFromGeneration = async (gen: number) => {
     );
   }
 };
+
+export const getGenerations = async () => {
+  try {
+    const response = await apiClient.get(`/generation/`);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      `Failed to fetch posts: ${error instanceof Error ? error.message : String(error)}`,
+      { cause: error },
+    );
+  }
+};
+export const getGenerationData = async (gen: number) => {
+  try {
+    const response = await apiClient.get(`/generation/${gen}`);
+    return response.data.main_region.name;
+  } catch (error) {
+    throw new Error(
+      `Failed to fetch posts: ${error instanceof Error ? error.message : String(error)}`,
+      { cause: error },
+    );
+  }
+};
