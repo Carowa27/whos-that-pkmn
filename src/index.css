@@ -223,6 +223,7 @@ button:disabled,
 button a,
 .button a {
   color: var(--text-h);
+  font-weight: normal;
 }
 #correct-head-wrapper {
   display: flex;
