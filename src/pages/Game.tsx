@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState, type ChangeEvent } from "react";
 
 import { PkmnClue } from "../components/PkmnClue";
@@ -156,26 +156,36 @@ export const Game = ({
               <br /> You have guessed all Correct!
             </h3>
           )}
-          {!isLoading &&
-            gameState.alternatives.length !== 0 &&
-            correct !== null && (
-              <>
-                <PkmnClue
-                  typeOfClue={clueType}
-                  pkmn={correct}
-                  reveal={gameState.reveal}
-                />
-                {gameState.guess === "" ? (
-                  <PkmnGuessInput
-                    typeOfAnswer={alternativeType}
-                    alternatives={gameState.alternatives}
-                    handleGuess={(e) => handleGuess(e)}
+          {!isLoading && (
+            <>
+              {gameState.alternatives.length !== 0 && correct !== null ? (
+                <>
+                  <PkmnClue
+                    typeOfClue={clueType}
+                    pkmn={correct}
+                    reveal={gameState.reveal}
                   />
-                ) : (
-                  <NewGameBtns startNewGame={() => newGame()} />
-                )}
-              </>
-            )}
+                  {gameState.guess === "" ? (
+                    <PkmnGuessInput
+                      typeOfAnswer={alternativeType}
+                      alternatives={gameState.alternatives}
+                      handleGuess={(e) => handleGuess(e)}
+                    />
+                  ) : (
+                    <NewGameBtns startNewGame={() => newGame()} />
+                  )}
+                </>
+              ) : (
+                <p>
+                  Congratulations, you have guessed all pokemon correct in this
+                  pokedex!
+                  <br /> Either <Link to={"/"}>choose another one</Link> or
+                  reset your guesses at the{" "}
+                  <Link to={"/correct-guesses"}>correct guesses</Link> page!
+                </p>
+              )}
+            </>
+          )}
         </>
       )}
     </>
