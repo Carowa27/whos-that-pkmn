@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { getGenerations } from "../api/getPkmn";
+import { useEffect, useRef, useState } from "react";
+import { getGenerationData, getGenerations } from "../api/getPkmn";
 
 interface GameCriteriaFormProps {
   error: { error: boolean; msg: string };
@@ -8,12 +8,19 @@ interface GameCriteriaFormProps {
     React.SetStateAction<{ error: boolean; msg: string }>
   >;
 }
+
+interface RegionData {
+  genNr: number;
+  region: string;
+}
 export const GameCriteriaForm = ({
   error,
   setError,
 }: GameCriteriaFormProps) => {
   const navigate = useNavigate();
+  const didFetch = useRef(false);
 
+  const [gen, setGen] = useState<RegionData[]>([]);
   const [formState, setFormState] = useState({
     generation: "",
     clueType: "",
@@ -46,11 +53,46 @@ export const GameCriteriaForm = ({
   const isFormValid = Boolean(
     formState.generation && formState.clueType && formState.alternativeType,
   );
+  const generationData = async () => {
+    try {
+      const results = await getGenerations();
+
+      const data: RegionData[] = [];
+
+      for (let genNr = 1; genNr <= results.count; genNr++) {
+        const response = await getGenerationData(genNr);
+
+        data.push({
+          genNr,
+          region: response,
+        });
+      }
+
+      setGen(data);
+    } catch (error) {
+      setError({
+        error: true,
+        msg: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (didFetch.current) return;
+    didFetch.current = true;
+
+    generationData();
+  }, []);
 
   return (
     <form onSubmit={handleGameCriterias} id="game-criteria-form">
       <h4>Choose your game criterias:</h4>
-
+      {error.error && (
+        <p>
+          There was an error:{error.msg}.<br />
+          Refresh the page or go with National Pokedex.
+        </p>
+      )}
       <select
         name="generation"
         value={formState.generation}
@@ -60,15 +102,13 @@ export const GameCriteriaForm = ({
           Select Gen or All
         </option>
         <option value="nat">National PokeDex</option>
-        <option value="gen1">Gen 1</option>
-        <option value="gen2">Gen 2</option>
-        <option value="gen3">Gen 3</option>
-        <option value="gen4">Gen 4</option>
-        <option value="gen5">Gen 5</option>
-        <option value="gen6">Gen 6</option>
-        <option value="gen7">Gen 7</option>
-        <option value="gen8">Gen 8</option>
-        <option value="gen9">Gen 9</option>
+        {gen &&
+          gen.map((g: RegionData) => (
+            <option key={`gen${g.genNr}`} value={`gen${g.genNr}`}>
+              Gen {g.genNr} -{" "}
+              {g.region.charAt(0).toUpperCase() + g.region.slice(1)}
+            </option>
+          ))}
       </select>
 
       <div id="clue-section">
