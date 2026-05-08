@@ -14,14 +14,19 @@ import { getGenIds, getPkmnObject } from "../functions/gameFns";
 interface GameProps {
   setCorrectGuesses: React.Dispatch<React.SetStateAction<pkmn[]>>;
   correctGuesses: pkmn[];
+  error: { error: boolean; msg: string };
+  setError: React.Dispatch<
+    React.SetStateAction<{ error: boolean; msg: string }>
+  >;
 }
 
-export const Game = ({ correctGuesses, setCorrectGuesses }: GameProps) => {
+export const Game = ({
+  correctGuesses,
+  setCorrectGuesses,
+  error,
+  setError,
+}: GameProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<{ error: boolean; msg: string }>({
-    error: false,
-    msg: "",
-  });
 
   const [gameState, setGameState] = useState<GameState>({
     alternatives: [],

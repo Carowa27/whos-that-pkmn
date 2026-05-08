@@ -1,7 +1,17 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getGenerations } from "../api/getPkmn";
 
-export const GameCriteriaForm = () => {
+interface GameCriteriaFormProps {
+  error: { error: boolean; msg: string };
+  setError: React.Dispatch<
+    React.SetStateAction<{ error: boolean; msg: string }>
+  >;
+}
+export const GameCriteriaForm = ({
+  error,
+  setError,
+}: GameCriteriaFormProps) => {
   const navigate = useNavigate();
 
   const [formState, setFormState] = useState({
