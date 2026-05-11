@@ -177,9 +177,6 @@ export const Game = ({
       }));
     }, 1000);
     newGame();
-    // setInterval(() => {
-    //   setTimeAttack((prev) => ({ ...prev, time: prev.time + 1 }));
-    // }, 1000);
   };
 
   useEffect(() => {
