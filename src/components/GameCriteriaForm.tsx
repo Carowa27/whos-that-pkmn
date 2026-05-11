@@ -110,7 +110,7 @@ export const GameCriteriaForm = ({
       <div>
         <h5>Game mode:</h5>
         <div id="game-mode-section">
-          <label className="button">
+          <label className="button w-100">
             <input
               type="radio"
               name="gameMode"
@@ -129,6 +129,17 @@ export const GameCriteriaForm = ({
               onChange={handleChange}
             />
             Time attack
+          </label>
+          <label className="button">
+            <input
+              type="radio"
+              name="gameMode"
+              value="shiny"
+              checked={formState.gameMode === "shiny"}
+              onChange={handleChange}
+              disabled
+            />
+            Am I Shiny?
           </label>
         </div>
       </div>
