@@ -12,13 +12,13 @@ export const Logo = ({ position }: ILogoProps) => {
         src={logoblk}
         className={`logo-dark logo-${position}`}
         alt="who's that pkmn logo"
-        width={position === "nav" ? 60 : 250}
+        width={position === "nav" ? 60 : 180}
       />
       <img
         src={logowht}
         className={`logo-light logo-${position}`}
         alt="who's that pkmn logo"
-        width={position === "nav" ? 60 : 250}
+        width={position === "nav" ? 60 : 180}
       />
     </>
   );
