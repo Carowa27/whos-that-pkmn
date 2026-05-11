@@ -8,6 +8,13 @@ export const Nav = () => {
         <Logo position="nav" />
       </Link>
       <Link to="/correct-guesses">Correct guesses</Link>
+      <Link
+        to="/disclaimer-info"
+        id="disclaimer-icon"
+        title="disclaimer information"
+      >
+        &#9432;
+      </Link>
     </nav>
   );
 };

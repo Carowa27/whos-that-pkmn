@@ -424,3 +424,6 @@ input[type="radio"] {
   justify-content: space-evenly;
   padding-bottom: 1rem;
 }
+#disclaimer-icon {
+  font-size: large;
+}

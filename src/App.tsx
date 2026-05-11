@@ -6,6 +6,7 @@ import { PkmnList } from "./pages/PkmnList";
 import { Home } from "./pages/Home";
 import { useState } from "react";
 import type { pkmnWInfo } from "./types/pkmn";
+import { DisclaimerInfo } from "./pages/DisclaimerInfo";
 
 function App() {
   const [correctGuesses, setCorrectGuesses] = useState<pkmnWInfo[]>([]);
@@ -54,6 +55,7 @@ function App() {
               />
             }
           />
+          <Route path="/disclaimer-info" element={<DisclaimerInfo />} />
         </Routes>
       </BrowserRouter>
     </div>
