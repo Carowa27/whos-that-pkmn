@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { useEffect, useState, type ChangeEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 
 import { PkmnClue } from "../components/PkmnClue";
 import { PkmnGuessInput } from "../components/PkmnGuessInput";
@@ -45,6 +45,7 @@ export const Game = ({
   const [timeAttackPkmnArr, setTimeAttackPkmnArr] = useState<pkmnData[]>([]);
   const [timeAttack, setTimeAttack] = useState({ game: "", time: 0 });
   const correct = gameState.correct;
+  const timerInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const resetGame = () => {
     setGameState({
@@ -169,16 +170,23 @@ export const Game = ({
 
   const startTimer = () => {
     setTimeAttack({ game: "started", time: 0 });
-
-    setInterval(() => {
-      setTimeAttack((prev) => ({ ...prev, time: prev.time + 1 }));
+    timerInterval.current = setInterval(() => {
+      setTimeAttack((prev) => ({
+        ...prev,
+        time: prev.time + 1,
+      }));
     }, 1000);
+    newGame();
+    // setInterval(() => {
+    //   setTimeAttack((prev) => ({ ...prev, time: prev.time + 1 }));
+    // }, 1000);
   };
 
   useEffect(() => {
     if (correct === undefined && timeAttack.game === "started") {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setTimeAttack({ game: "ended", time: timeAttack.time });
+      clearInterval(timerInterval.current);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [correct]);
@@ -269,16 +277,17 @@ export const Game = ({
                   <br /> You have guessed all Correct!
                 </h3>
                 {timeAttack.game === "ended" && (
-                  <p className="center">Your time is {timeAttack.time}</p>
+                  <p className="center">
+                    Your time is {Math.floor(timeAttack.time / 60)}:
+                    {String(timeAttack.time % 60).padStart(2, "0")} min
+                  </p>
                 )}
               </>
             )}
           {gameMode === "time-attack" && timeAttack.game === "not-started" ? (
             <>
               <h3 className="center">Are you ready?</h3>
-              <button onClick={() => (newGame(), startTimer())}>
-                Start game
-              </button>
+              <button onClick={() => startTimer()}>Start game</button>
             </>
           ) : (
             <>
