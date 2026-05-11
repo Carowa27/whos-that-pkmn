@@ -186,7 +186,9 @@ export const Game = ({
     if (correct === undefined && timeAttack.game === "started") {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setTimeAttack({ game: "ended", time: timeAttack.time });
-      clearInterval(timerInterval.current);
+      if (timerInterval.current !== null) {
+        clearInterval(timerInterval.current);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [correct]);
