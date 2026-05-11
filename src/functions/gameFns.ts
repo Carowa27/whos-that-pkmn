@@ -33,10 +33,7 @@ export const getTimeAttackPkmnArr = async (gen: number) => {
   return newPkmnArr;
 };
 
-export const getPkmnObject = async (
-  id: number | null,
-  pkmnArr: { name: string; id: number }[] | null,
-) => {
+export const getPkmnObject = async (id: number, pkmnArr: pkmnData[] | null) => {
   let pkmnWDex: pkmnWInfo;
   let pkmnWSprites: pkmnWInfo;
   let pkmnObject: pkmnWInfo | pkmnData;
@@ -50,14 +47,16 @@ export const getPkmnObject = async (
       dexEntries: pkmnWDex.dexEntries,
       sprites: pkmnWSprites.sprites,
     };
-  } else {
-    const pkmnFromArr = pkmnArr.find((p) => p.id === id);
-    pkmnObject = {
-      id: pkmnFromArr.id,
-      pkmnName: pkmnFromArr.name,
-      dexEntries: null,
-      sprites: null,
-    };
+    return pkmnObject;
   }
-  return pkmnObject;
+  const pkmnFromArr = pkmnArr.find((p) => p.id === id);
+
+  if (!pkmnFromArr) {
+    throw new Error(`Pokemon with id ${id} not found`);
+  }
+
+  return {
+    id: pkmnFromArr.id,
+    pkmnName: pkmnFromArr.pkmnName,
+  };
 };

@@ -1,9 +1,9 @@
-import type { pkmnWInfo } from "../types/pkmn";
+import type { pkmnData, pkmnWInfo } from "../types/pkmn";
 import { Pkmn } from "./Pkmn";
 
 interface IPkmnClueProps {
   typeOfClue: string | undefined;
-  pkmn: pkmnWInfo;
+  pkmn: pkmnWInfo | pkmnData;
   reveal: boolean;
 }
 
@@ -14,11 +14,13 @@ export const PkmnClue = ({ typeOfClue, pkmn, reveal }: IPkmnClueProps) => {
       return trimmedText;
     };
     const dexEntry =
-      pkmn.dexEntries[0].language.name === "en"
-        ? textTrim(pkmn.dexEntries[0].flavor_text)
-        : pkmn.dexEntries[0].language.name === "en"
-          ? textTrim(pkmn.dexEntries[1].flavor_text)
-          : pkmn.dexEntries[2].flavor_text;
+      "dexEntries" in pkmn && pkmn.dexEntries !== null
+        ? pkmn.dexEntries[0].language.name === "en"
+          ? textTrim(pkmn.dexEntries[0].flavor_text)
+          : pkmn.dexEntries[0].language.name === "en"
+            ? textTrim(pkmn.dexEntries[1].flavor_text)
+            : pkmn.dexEntries[2].flavor_text
+        : "No pokedex entries was found";
     return (
       <p
         id="dex-entry"

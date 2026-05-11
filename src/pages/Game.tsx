@@ -39,13 +39,10 @@ export const Game = ({
     reveal: false,
   });
   const { gameMode, gen, clueType, alternativeType } = useParams();
-  const [timeAttackCorrectGuesses, setTimeAttackCorrectGuesses] = useState([]);
-  const [timeAttackPkmnArr, setTimeAttackPkmnArr] = useState<
-    {
-      name: string;
-      id: number;
-    }[]
+  const [timeAttackCorrectGuesses, setTimeAttackCorrectGuesses] = useState<
+    pkmnData[]
   >([]);
+  const [timeAttackPkmnArr, setTimeAttackPkmnArr] = useState<pkmnData[]>([]);
   const [timeAttack, setTimeAttack] = useState({ game: "", time: 0 });
   const correct = gameState.correct;
 
@@ -125,7 +122,7 @@ export const Game = ({
     setTimeAttack({ game: "not-started", time: 0 });
     const fetchData = async () => {
       setTimeAttackPkmnArr(
-        await getTimeAttackPkmnArr(Number(gen.replace("gen", ""))),
+        await getTimeAttackPkmnArr(Number(gen!.replace("gen", ""))),
       );
     };
     if (gameMode === "time-attack" && timeAttackPkmnArr.length === 0) {
@@ -153,9 +150,9 @@ export const Game = ({
       if (e.target.value === correct.pkmnName) {
         setGameState((prev) => ({ ...prev, guess: "correct" }));
         if (gameMode === "regular") {
-          setCorrectGuesses((prev) => [...prev, correct]);
+          setCorrectGuesses((prev) => [...prev, correct as pkmnWInfo]);
         } else {
-          setTimeAttackCorrectGuesses((prev) => [...prev, correct]);
+          setTimeAttackCorrectGuesses((prev) => [...prev, correct as pkmnData]);
         }
         if (gameMode === "time-attack") {
           setTimeout(() => {
@@ -284,7 +281,7 @@ export const Game = ({
                     <>
                       <PkmnClue
                         typeOfClue={
-                          clueType || (gameMode === "time-attack" && "img")
+                          gameMode === "time-attack" ? "img" : clueType
                         }
                         pkmn={correct}
                         reveal={gameState.reveal}
@@ -292,8 +289,9 @@ export const Game = ({
                       {gameState.guess === "" ? (
                         <PkmnGuessInput
                           typeOfAnswer={
-                            alternativeType ||
-                            (gameMode === "time-attack" && "multiple")
+                            gameMode === "time-attack"
+                              ? "multiple"
+                              : alternativeType
                           }
                           alternatives={gameState.alternatives}
                           handleGuess={(e) => handleGuess(e)}

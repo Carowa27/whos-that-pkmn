@@ -12,7 +12,7 @@ export const Pkmn = ({ pkmn, reveal }: IPkmnProps) => {
         className={`pkmn-guess-img ${reveal === true ? "revealed" : ""}`}
         alt={"guess the pkmn image"}
         src={
-          "sprites" in pkmn
+          "sprites" in pkmn && pkmn.sprites !== null
             ? pkmn.sprites.other["official-artwork"].front_default
               ? pkmn.sprites.other["official-artwork"].front_default
               : pkmn.sprites.other.home.front_default
