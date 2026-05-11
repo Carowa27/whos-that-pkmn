@@ -9,7 +9,11 @@ import { Loading } from "../components/Loading";
 import type { pkmn } from "../types/pkmn";
 import type { GameState } from "../types/game";
 import { Header } from "../components/Header";
-import { getGenIds, getPkmnObject } from "../functions/gameFns";
+import {
+  getGenIds,
+  getPkmnObject,
+  getTimeAttackPkmnArr,
+} from "../functions/gameFns";
 
 interface GameProps {
   setCorrectGuesses: React.Dispatch<React.SetStateAction<pkmn[]>>;
@@ -34,7 +38,15 @@ export const Game = ({
     guess: "",
     reveal: false,
   });
-  const { gen, clueType, alternativeType } = useParams();
+  const { gameMode, gen, clueType, alternativeType } = useParams();
+  const [timeAttackCorrectGuesses, setTimeAttackCorrectGuesses] = useState([]);
+  const [timeAttackPkmnArr, setTimeAttackPkmnArr] = useState<
+    {
+      name: string;
+      id: number;
+    }[]
+  >([]);
+  const [timeAttack, setTimeAttack] = useState({ game: "", time: 0 });
   const correct = gameState.correct;
 
   const resetGame = () => {
@@ -46,9 +58,9 @@ export const Game = ({
     });
   };
 
-  const getRandomNumbers = (low: number, high: number) => {
+  const getRandomNumbers = (low: number, high: number, array: pkmn[]) => {
     const excludedIds = new Set(
-      correctGuesses.length !== 0 ? correctGuesses.map((p) => p.id) : [],
+      array.length !== 0 ? array.map((p) => p.id) : [],
     );
     const ids = Array.from({ length: high - low + 1 }, (_, i) => i + low)
       .filter((id) => !excludedIds.has(id))
@@ -64,19 +76,25 @@ export const Game = ({
     try {
       let low = 1;
       let high = 1025;
-
       if (gen !== "nat" && gen !== undefined) {
         const generation = Number(gen.replace("gen", ""));
         const genIds = await getGenIds(generation);
         low = genIds.low;
         high = genIds.high;
       }
-      const ids = getRandomNumbers(low, high);
+      const ids = getRandomNumbers(
+        low,
+        high,
+        gameMode === "regular" ? correctGuesses : timeAttackCorrectGuesses,
+      );
       resetGame();
 
       const alternatives = await Promise.all(
-        ids.map((id) => getPkmnObject(id)),
+        ids.map((id) =>
+          getPkmnObject(id, gameMode === "regular" ? null : timeAttackPkmnArr),
+        ),
       );
+
       const correct = alternatives[0];
 
       alternatives.sort(() => Math.random() - 0.5);
@@ -100,30 +118,74 @@ export const Game = ({
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    newGame();
+    setTimeAttack({ game: "not-started", time: 0 });
+    const fetchData = async () => {
+      setTimeAttackPkmnArr(
+        await getTimeAttackPkmnArr(Number(gen.replace("gen", ""))),
+      );
+    };
+    if (gameMode === "time-attack" && timeAttackPkmnArr.length === 0) {
+      fetchData();
+    } else {
+      newGame();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    if (timeAttackPkmnArr.length !== 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      newGame();
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeAttackPkmnArr]);
 
   const handleGuess = (e: ChangeEvent<HTMLFormElement, Element>) => {
     setGameState((prevState) => ({
       ...prevState,
       reveal: true,
     }));
-    if (alternativeType === "multiple") {
+    if (alternativeType === "multiple" || gameMode === "time-attack") {
       if (!correct) return;
 
       if (e.target.value === correct.pkmnName) {
         setGameState((prev) => ({ ...prev, guess: "correct" }));
-        setCorrectGuesses((prev) => [...prev, correct]);
+        if (gameMode === "regular") {
+          setCorrectGuesses((prev) => [...prev, correct]);
+        } else {
+          setTimeAttackCorrectGuesses((prev) => [...prev, correct]);
+        }
+        setTimeout(() => {
+          newGame();
+        }, 1000);
       } else {
         setGameState((prev) => ({ ...prev, guess: "wrong" }));
+        setTimeout(() => {
+          newGame();
+        }, 1000);
       }
     } else {
       console.log(e.target.value);
     }
   };
+
+  const startTimer = () => {
+    setTimeAttack({ game: "started", time: 0 });
+    if (timeAttack.game !== "ended") {
+      setInterval(() => {
+        setTimeAttack((prev) => ({ ...prev, time: prev.time + 1 }));
+      }, 1000);
+    }
+  };
+
+  useEffect(() => {
+    if (correct === undefined && timeAttack.game === "started") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setTimeAttack({ game: "ended", time: timeAttack.time });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [correct]);
   return (
     <>
+      <p>{timeAttack.game + " " + timeAttack.time + " " + gameMode}</p>
       {error.error ? (
         <p>{error.msg}</p>
       ) : (
@@ -150,39 +212,74 @@ export const Game = ({
             )}
           </div>
           {isLoading && <Loading />}
-          {!isLoading && correct === undefined && (
+          {!isLoading && gameMode === "regular" && correct === undefined && (
             <h3 className="center correct">
               Congratulations!
               <br /> You have guessed all Correct!
             </h3>
           )}
-          {!isLoading && (
+          {!isLoading &&
+            gameMode === "time-attack" &&
+            correct === undefined && (
+              <>
+                <h3 className="center correct">
+                  Congratulations!
+                  <br /> You have guessed all Correct!
+                </h3>
+                {timeAttack.game === "ended" && (
+                  <p className="center">Your time is {timeAttack.time}</p>
+                )}
+              </>
+            )}
+          {timeAttack.game === "not-started" ? (
+            <button onClick={() => (newGame(), startTimer())}>
+              Start game
+            </button>
+          ) : (
             <>
-              {gameState.alternatives.length !== 0 && correct !== null ? (
+              {!isLoading && (
                 <>
-                  <PkmnClue
-                    typeOfClue={clueType}
-                    pkmn={correct}
-                    reveal={gameState.reveal}
-                  />
-                  {gameState.guess === "" ? (
-                    <PkmnGuessInput
-                      typeOfAnswer={alternativeType}
-                      alternatives={gameState.alternatives}
-                      handleGuess={(e) => handleGuess(e)}
-                    />
+                  {gameState.alternatives.length !== 0 && correct !== null ? (
+                    <>
+                      <PkmnClue
+                        typeOfClue={
+                          clueType || (gameMode === "time-attack" && "img")
+                        }
+                        pkmn={correct}
+                        reveal={gameState.reveal}
+                      />
+                      {gameState.guess === "" ? (
+                        <PkmnGuessInput
+                          typeOfAnswer={
+                            alternativeType ||
+                            (gameMode === "time-attack" && "multiple")
+                          }
+                          alternatives={gameState.alternatives}
+                          handleGuess={(e) => handleGuess(e)}
+                        />
+                      ) : gameMode !== "time-attack" ? (
+                        <NewGameBtns startNewGame={() => newGame()} />
+                      ) : (
+                        <></>
+                      )}
+                    </>
                   ) : (
-                    <NewGameBtns startNewGame={() => newGame()} />
+                    <>
+                      {gameMode !== "time-attack" && (
+                        <p>
+                          Congratulations, you have guessed all pokemon correct
+                          in this pokedex!
+                          <br /> Either <Link to={"/"}>
+                            choose another one
+                          </Link>{" "}
+                          or reset your guesses at the{" "}
+                          <Link to={"/correct-guesses"}>correct guesses</Link>{" "}
+                          page!
+                        </p>
+                      )}
+                    </>
                   )}
                 </>
-              ) : (
-                <p>
-                  Congratulations, you have guessed all pokemon correct in this
-                  pokedex!
-                  <br /> Either <Link to={"/"}>choose another one</Link> or
-                  reset your guesses at the{" "}
-                  <Link to={"/correct-guesses"}>correct guesses</Link> page!
-                </p>
               )}
             </>
           )}

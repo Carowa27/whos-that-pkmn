@@ -24,7 +24,18 @@ function App() {
             element={<Home error={error} setError={setError} />}
           />
           <Route
-            path="/game/:gen/:clueType/:alternativeType"
+            path="/game/:gameMode/:gen/:clueType/:alternativeType"
+            element={
+              <Game
+                setCorrectGuesses={setCorrectGuesses}
+                correctGuesses={correctGuesses}
+                error={error}
+                setError={setError}
+              />
+            }
+          />
+          <Route
+            path="/game/:gameMode/:gen/"
             element={
               <Game
                 setCorrectGuesses={setCorrectGuesses}
