@@ -27,7 +27,7 @@ export const getTimeAttackPkmnArr = async (gen: number) => {
     .map((p: pkmnFromGen) => {
       const match = p.url.match(/pokemon-species\/(\d+)\//);
       const id = match ? Number(match[1]) : null;
-      return id !== null ? { pkmnName: p.name, id } : null;
+      return id !== null ? { name: p.name, id } : null;
     })
     .filter((p: pkmnFromGen) => p !== null);
   return newPkmnArr;
@@ -48,12 +48,15 @@ export const getPkmnObject = async (id: number, pkmnArr: pkmnData[] | null) => {
       sprites: pkmnWSprites.sprites,
     };
     return pkmnObject;
-  } else {
-    const pkmnFromArr = pkmnArr.find((p) => p.id === id);
-
-    return {
-      id: pkmnFromArr.id,
-      pkmnName: pkmnFromArr.pkmnName,
-    };
   }
+  const pkmnFromArr = pkmnArr.find((p) => p.id === id);
+
+  if (!pkmnFromArr) {
+    throw new Error(`Pokemon with id ${id} not found`);
+  }
+
+  return {
+    id: pkmnFromArr.id,
+    pkmnName: pkmnFromArr.pkmnName,
+  };
 };
