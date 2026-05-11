@@ -20,7 +20,7 @@ export const DisclaimerInfo = () => {
       </p>
 
       <p>
-        Pokémon data used in this application is provided by
+        Pokémon data used in this application is provided by{" "}
         <Link
           to={"https://pokeapi.co"}
           target="_blank"
