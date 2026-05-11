@@ -2,7 +2,11 @@ export interface pkmnFromGen {
   name: string;
   url: string;
 }
-export interface pkmn {
+export interface pkmnData {
+  id: number;
+  pkmnName: string;
+}
+export interface pkmnWInfo {
   id: number;
   pkmnName: string;
   dexEntries: FlavorTextEntry[];

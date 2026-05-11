@@ -1,4 +1,4 @@
-import type { pkmn, pkmnFromGen } from "../types/pkmn";
+import type { pkmnData, pkmnFromGen, pkmnWInfo } from "../types/pkmn";
 
 import {
   getPkmnFromGeneration,
@@ -29,7 +29,7 @@ export const getTimeAttackPkmnArr = async (gen: number) => {
       const id = match ? Number(match[1]) : null;
       return id !== null ? { name: p.name, id } : null;
     })
-    .filter((p) => p !== null);
+    .filter((p: pkmnFromGen) => p !== null);
   return newPkmnArr;
 };
 
@@ -37,9 +37,9 @@ export const getPkmnObject = async (
   id: number | null,
   pkmnArr: { name: string; id: number }[] | null,
 ) => {
-  let pkmnWDex: pkmn;
-  let pkmnWSprites: pkmn;
-  let pkmnObject: pkmn;
+  let pkmnWDex: pkmnWInfo;
+  let pkmnWSprites: pkmnWInfo;
+  let pkmnObject: pkmnWInfo | pkmnData;
 
   if (pkmnArr === null) {
     pkmnWSprites = await getSpecificPkmn(id);

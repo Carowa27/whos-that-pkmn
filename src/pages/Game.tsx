@@ -6,7 +6,7 @@ import { PkmnGuessInput } from "../components/PkmnGuessInput";
 import { NewGameBtns } from "../components/NewGameBtns";
 import { Loading } from "../components/Loading";
 
-import type { pkmn } from "../types/pkmn";
+import type { pkmnData, pkmnWInfo } from "../types/pkmn";
 import type { GameState } from "../types/game";
 import { Header } from "../components/Header";
 import {
@@ -16,8 +16,8 @@ import {
 } from "../functions/gameFns";
 
 interface GameProps {
-  setCorrectGuesses: React.Dispatch<React.SetStateAction<pkmn[]>>;
-  correctGuesses: pkmn[];
+  setCorrectGuesses: React.Dispatch<React.SetStateAction<pkmnWInfo[]>>;
+  correctGuesses: pkmnWInfo[];
   error: { error: boolean; msg: string };
   setError: React.Dispatch<
     React.SetStateAction<{ error: boolean; msg: string }>
@@ -58,7 +58,11 @@ export const Game = ({
     });
   };
 
-  const getRandomNumbers = (low: number, high: number, array: pkmn[]) => {
+  const getRandomNumbers = (
+    low: number,
+    high: number,
+    array: (pkmnWInfo | pkmnData)[],
+  ) => {
     const excludedIds = new Set(
       array.length !== 0 ? array.map((p) => p.id) : [],
     );

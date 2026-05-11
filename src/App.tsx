@@ -5,10 +5,10 @@ import { Game } from "./pages/Game";
 import { PkmnList } from "./pages/PkmnList";
 import { Home } from "./pages/Home";
 import { useState } from "react";
-import type { pkmn } from "./types/pkmn";
+import type { pkmnWInfo } from "./types/pkmn";
 
 function App() {
-  const [correctGuesses, setCorrectGuesses] = useState<pkmn[]>([]);
+  const [correctGuesses, setCorrectGuesses] = useState<pkmnWInfo[]>([]);
   const [error, setError] = useState<{ error: boolean; msg: string }>({
     error: false,
     msg: "",

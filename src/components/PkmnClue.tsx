@@ -1,9 +1,9 @@
-import type { pkmn } from "../types/pkmn";
+import type { pkmnWInfo } from "../types/pkmn";
 import { Pkmn } from "./Pkmn";
 
 interface IPkmnClueProps {
   typeOfClue: string | undefined;
-  pkmn: pkmn;
+  pkmn: pkmnWInfo;
   reveal: boolean;
 }
 
