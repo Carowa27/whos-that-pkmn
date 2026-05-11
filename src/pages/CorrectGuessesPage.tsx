@@ -8,7 +8,7 @@ interface ListPageProps {
   setCorrectGuesses: React.Dispatch<React.SetStateAction<pkmnWInfo[]>>;
 }
 
-export const PkmnList = ({
+export const CorrectGuessesPage = ({
   correctGuesses,
   setCorrectGuesses,
 }: ListPageProps) => {

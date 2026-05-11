@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { Nav } from "./components/Nav";
 import { Game } from "./pages/Game";
-import { PkmnList } from "./pages/PkmnList";
+import { CorrectGuessesPage } from "./pages/CorrectGuessesPage";
 import { Home } from "./pages/Home";
 import { useState } from "react";
 import type { pkmnWInfo } from "./types/pkmn";
@@ -49,7 +49,7 @@ function App() {
           <Route
             path="/correct-guesses"
             element={
-              <PkmnList
+              <CorrectGuessesPage
                 correctGuesses={correctGuesses}
                 setCorrectGuesses={setCorrectGuesses}
               />
