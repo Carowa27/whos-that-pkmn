@@ -153,14 +153,18 @@ export const Game = ({
         } else {
           setTimeAttackCorrectGuesses((prev) => [...prev, correct]);
         }
-        setTimeout(() => {
-          newGame();
-        }, 1000);
+        if (gameMode === "time-attack") {
+          setTimeout(() => {
+            newGame();
+          }, 1000);
+        }
       } else {
         setGameState((prev) => ({ ...prev, guess: "wrong" }));
-        setTimeout(() => {
-          newGame();
-        }, 1000);
+        if (gameMode === "time-attack") {
+          setTimeout(() => {
+            newGame();
+          }, 1000);
+        }
       }
     } else {
       console.log(e.target.value);
@@ -169,11 +173,10 @@ export const Game = ({
 
   const startTimer = () => {
     setTimeAttack({ game: "started", time: 0 });
-    if (timeAttack.game !== "ended") {
-      setInterval(() => {
-        setTimeAttack((prev) => ({ ...prev, time: prev.time + 1 }));
-      }, 1000);
-    }
+
+    setInterval(() => {
+      setTimeAttack((prev) => ({ ...prev, time: prev.time + 1 }));
+    }, 1000);
   };
 
   useEffect(() => {
@@ -185,30 +188,61 @@ export const Game = ({
   }, [correct]);
   return (
     <>
-      <p>{timeAttack.game + " " + timeAttack.time + " " + gameMode}</p>
       {error.error ? (
         <p>{error.msg}</p>
       ) : (
         <>
           <div id="game-header">
             <Header />
+            {gameMode === "time-attack" && (
+              <section id="time-attack-info-section">
+                <p>Status: {timeAttack.game.replace("-", " ")}</p>
+                <p>
+                  Time: {Math.floor(timeAttack.time / 60)}:
+                  {String(timeAttack.time % 60).padStart(2, "0")}
+                </p>
+              </section>
+            )}
+
             {gameState.guess === "correct" && correct && (
-              <h2 className="guess-header">
-                <span className="correct">Correct!</span>
-                <br /> It is{" "}
-                {correct.pkmnName.charAt(0).toUpperCase() +
-                  correct.pkmnName.slice(1)}
-                !
-              </h2>
+              <>
+                <h2 className="guess-header">
+                  <span className="correct">Correct!</span>
+                  <br /> It is{" "}
+                  {correct.pkmnName.charAt(0).toUpperCase() +
+                    correct.pkmnName.slice(1)}
+                  !
+                </h2>
+                {gameMode === "time-attack" && (
+                  <p className="center">
+                    pkmn left to guess:
+                    {Math.abs(
+                      timeAttackCorrectGuesses.length -
+                        timeAttackPkmnArr.length,
+                    )}
+                  </p>
+                )}
+              </>
             )}
             {gameState.guess === "wrong" && correct && (
-              <h2 className="guess-header">
-                <span className="wrong">Wrong!</span>
-                <br /> It is{" "}
-                {correct.pkmnName.charAt(0).toUpperCase() +
-                  correct.pkmnName.slice(1)}
-                !
-              </h2>
+              <>
+                <h2 className="guess-header">
+                  <span className="wrong">Wrong!</span>
+                  <br /> It is{" "}
+                  {correct.pkmnName.charAt(0).toUpperCase() +
+                    correct.pkmnName.slice(1)}
+                  !
+                </h2>
+                {gameMode === "time-attack" && (
+                  <p className="center">
+                    pkmn left to guess:
+                    {Math.abs(
+                      timeAttackCorrectGuesses.length -
+                        timeAttackPkmnArr.length,
+                    )}
+                  </p>
+                )}
+              </>
             )}
           </div>
           {isLoading && <Loading />}
@@ -231,10 +265,13 @@ export const Game = ({
                 )}
               </>
             )}
-          {timeAttack.game === "not-started" ? (
-            <button onClick={() => (newGame(), startTimer())}>
-              Start game
-            </button>
+          {gameMode === "time-attack" && timeAttack.game === "not-started" ? (
+            <>
+              <h3 className="center">Are you ready?</h3>
+              <button onClick={() => (newGame(), startTimer())}>
+                Start game
+              </button>
+            </>
           ) : (
             <>
               {!isLoading && (

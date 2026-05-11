@@ -415,3 +415,8 @@ input[type="radio"] {
 .center {
   text-align: center;
 }
+#time-attack-info-section {
+  display: flex;
+  justify-content: space-evenly;
+  padding-bottom: 1rem;
+}
