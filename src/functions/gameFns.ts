@@ -27,7 +27,7 @@ export const getTimeAttackPkmnArr = async (gen: number) => {
     .map((p: pkmnFromGen) => {
       const match = p.url.match(/pokemon-species\/(\d+)\//);
       const id = match ? Number(match[1]) : null;
-      return id !== null ? { name: p.name, id } : null;
+      return id !== null ? { pkmnName: p.name, id } : null;
     })
     .filter((p: pkmnFromGen) => p !== null);
   return newPkmnArr;
