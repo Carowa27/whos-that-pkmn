@@ -154,11 +154,6 @@ export const Game = ({
         } else {
           setTimeAttackCorrectGuesses((prev) => [...prev, correct as pkmnData]);
         }
-        if (gameMode === "time-attack") {
-          setTimeout(() => {
-            newGame();
-          }, 1000);
-        }
       } else {
         setGameState((prev) => ({ ...prev, guess: "wrong" }));
         if (gameMode === "time-attack") {
@@ -187,6 +182,18 @@ export const Game = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [correct]);
+  useEffect(() => {
+    if (
+      correct !== undefined &&
+      gameMode === "time-attack" &&
+      timeAttack.game !== "ended" &&
+      timeAttackCorrectGuesses.length !== 0
+    ) {
+      setTimeout(() => {
+        newGame();
+      }, 1000);
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeAttackCorrectGuesses]);
   return (
     <>
       {error.error ? (
