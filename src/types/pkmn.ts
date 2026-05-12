@@ -9,8 +9,18 @@ export interface pkmnData {
 export interface pkmnWInfo {
   id: number;
   pkmnName: string;
-  dexEntries: FlavorTextEntry[] | null;
+  dexEntry: string | null;
+  sprite: string | null;
+}
+export interface pkmnResponseWSprites {
+  id: number;
+  pkmnName: string;
   sprites: PokemonSprites | null;
+}
+export interface pkmnResponseWDex {
+  id: number;
+  pkmnName: string;
+  dexEntries: FlavorTextEntry[] | null;
 }
 interface FlavorTextEntry {
   flavor_text: string;
