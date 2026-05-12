@@ -31,7 +31,7 @@ export const Game = ({
   setError,
 }: GameProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isShiny] = useState(() => Math.random() < 0.5);
+  const [isShiny, setIsShiny] = useState(() => Math.random() < 0.5);
   const [gameState, setGameState] = useState<GameState>({
     alternatives: [],
     correct: null,
@@ -54,6 +54,7 @@ export const Game = ({
       guess: "",
       reveal: false,
     });
+    setIsShiny(() => Math.random() < 0.5);
   };
 
   const getRandomNumbers = (
@@ -100,8 +101,16 @@ export const Game = ({
         ),
       );
 
-      const correct = alternatives[0];
+      let correct = alternatives[0];
       if (gameMode === "shiny") {
+        correct = {
+          pkmnName: correct.pkmnName,
+          id: correct.id,
+          dexEntry: "dexEntry" in correct ? correct.dexEntry : "",
+          sprite: isShiny
+            ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/${correct.id}.png`
+            : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${correct.id}.png`,
+        };
         alternatives = [];
       }
       alternatives.sort(() => Math.random() - 0.5);
@@ -235,7 +244,6 @@ export const Game = ({
                 </p>
               </section>
             )}
-
             {gameState.guess === "correct" && correct && (
               <>
                 <h2 className="guess-header">
@@ -284,6 +292,16 @@ export const Game = ({
                 )}
               </>
             )}
+            {gameMode === "shiny" &&
+              correct !== null &&
+              gameState.guess !== "" && (
+                <p className="center">
+                  {"sprite" in correct &&
+                  correct.sprite.includes("shiny") === true
+                    ? "I am!"
+                    : "I am not!"}
+                </p>
+              )}
           </div>
           {isLoading && <Loading />}
           {!isLoading && gameMode === "regular" && correct === undefined && (
