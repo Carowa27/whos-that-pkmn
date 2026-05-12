@@ -31,7 +31,7 @@ export const Game = ({
   setError,
 }: GameProps) => {
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isShiny] = useState(() => Math.random() < 0.5);
   const [gameState, setGameState] = useState<GameState>({
     alternatives: [],
     correct: null,
@@ -91,14 +91,19 @@ export const Game = ({
       );
       resetGame();
 
-      const alternatives = await Promise.all(
+      let alternatives = await Promise.all(
         ids.map((id) =>
-          getPkmnObject(id, gameMode === "regular" ? null : timeAttackPkmnArr),
+          getPkmnObject(
+            id,
+            gameMode === "time-attack" ? timeAttackPkmnArr : null,
+          ),
         ),
       );
 
       const correct = alternatives[0];
-
+      if (gameMode === "shiny") {
+        alternatives = [];
+      }
       alternatives.sort(() => Math.random() - 0.5);
 
       setGameState((prevState) => ({
@@ -163,7 +168,18 @@ export const Game = ({
           }, 1000);
         }
       }
-    } else {
+    }
+    if (gameMode === "shiny") {
+      if (
+        (e.target.value === "shiny-true" && isShiny === true) ||
+        (e.target.value === "shiny-false" && isShiny === false)
+      ) {
+        setGameState((prev) => ({ ...prev, guess: "correct" }));
+      } else {
+        setGameState((prev) => ({ ...prev, guess: "wrong" }));
+      }
+    }
+    if (gameMode === "text") {
       console.log(e.target.value);
     }
   };
@@ -209,6 +225,7 @@ export const Game = ({
         <>
           <div id="game-header">
             <Header />
+            {gameMode === "shiny" && <h2>Am I shiny?</h2>}
             {gameMode === "time-attack" && (
               <section id="time-attack-info-section">
                 <p>Status: {timeAttack.game.replace("-", " ")}</p>
@@ -223,10 +240,14 @@ export const Game = ({
               <>
                 <h2 className="guess-header">
                   <span className="correct">Correct!</span>
-                  <br /> It is{" "}
-                  {correct.pkmnName.charAt(0).toUpperCase() +
-                    correct.pkmnName.slice(1)}
-                  !
+                  {gameMode !== "shiny" && (
+                    <>
+                      <br /> It is{" "}
+                      {correct.pkmnName.charAt(0).toUpperCase() +
+                        correct.pkmnName.slice(1)}
+                      !
+                    </>
+                  )}
                 </h2>
                 {gameMode === "time-attack" && (
                   <p className="center">
@@ -243,10 +264,14 @@ export const Game = ({
               <>
                 <h2 className="guess-header">
                   <span className="wrong">Wrong!</span>
-                  <br /> It is{" "}
-                  {correct.pkmnName.charAt(0).toUpperCase() +
-                    correct.pkmnName.slice(1)}
-                  !
+                  {gameMode !== "shiny" && (
+                    <>
+                      <br /> It is{" "}
+                      {correct.pkmnName.charAt(0).toUpperCase() +
+                        correct.pkmnName.slice(1)}
+                      !
+                    </>
+                  )}
                 </h2>
                 {gameMode === "time-attack" && (
                   <p className="center">
@@ -292,11 +317,19 @@ export const Game = ({
             <>
               {!isLoading && (
                 <>
-                  {gameState.alternatives.length !== 0 && correct !== null ? (
+                  {(gameState.alternatives.length !== 0 ||
+                    gameMode === "shiny") &&
+                  correct !== null ? (
                     <>
                       <PkmnClue
                         typeOfClue={
-                          gameMode === "time-attack" ? "img" : clueType
+                          gameMode === "time-attack"
+                            ? "img"
+                            : gameMode === "shiny"
+                              ? isShiny
+                                ? "shiny"
+                                : "not-shiny"
+                              : clueType
                         }
                         pkmn={correct}
                         reveal={gameState.reveal}
@@ -306,7 +339,9 @@ export const Game = ({
                           typeOfAnswer={
                             gameMode === "time-attack"
                               ? "multiple"
-                              : alternativeType
+                              : gameMode === "shiny"
+                                ? "boolean"
+                                : alternativeType
                           }
                           alternatives={gameState.alternatives}
                           handleGuess={(e) => handleGuess(e)}
@@ -319,7 +354,7 @@ export const Game = ({
                     </>
                   ) : (
                     <>
-                      {gameMode !== "time-attack" && (
+                      {gameMode === "regular" && (
                         <p>
                           Congratulations, you have guessed all pokemon correct
                           in this pokedex!

@@ -8,8 +8,6 @@ interface IPkmnClueProps {
 }
 
 export const PkmnClue = ({ typeOfClue, pkmn, reveal }: IPkmnClueProps) => {
-  console.log("pkmnclue", typeOfClue, pkmn);
-
   if (typeOfClue === "dex") {
     const textTrim = (text: string) => {
       const trimmedText = text.replace(/\f/g, " ").trim().split("\n").join(" ");
@@ -26,10 +24,17 @@ export const PkmnClue = ({ typeOfClue, pkmn, reveal }: IPkmnClueProps) => {
       />
     );
   }
-  if (typeOfClue === "shiny") {
-    console.log("shiny clue", pkmn);
-    //get img??
-    return <Pkmn pkmn={pkmn} reveal={true} />;
+  if (typeOfClue === "shiny" || typeOfClue === "not-shiny") {
+    const shinyPkmn = {
+      id: pkmn.id,
+      pkmnName: pkmn.pkmnName,
+      sprite:
+        typeOfClue === "shiny"
+          ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/${pkmn.id}.png`
+          : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pkmn.id}.png`,
+      dexEntry: null,
+    };
+    return <Pkmn pkmn={shinyPkmn} reveal={true} />;
   }
   return (
     <div id="pkmn-guess-img-wrapper">

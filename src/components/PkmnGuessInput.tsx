@@ -12,14 +12,9 @@ export const PkmnGuessInput = ({
   alternatives,
   handleGuess,
 }: IPkmnGuessProps) => {
-  console.log(typeOfAnswer);
-
-  if (typeOfAnswer === "boolean") {
-    console.log("shiny", alternatives);
-  }
   return (
     <>
-      {typeOfAnswer === "multiple" ? (
+      {typeOfAnswer === "multiple" && (
         <form id="pkmn-guess-form" onChange={(e) => handleGuess(e)}>
           {alternatives.map((p: pkmnWInfo | pkmnData) => (
             <label key={p.pkmnName} htmlFor={p.pkmnName} className="button">
@@ -33,7 +28,30 @@ export const PkmnGuessInput = ({
             </label>
           ))}
         </form>
-      ) : (
+      )}
+      {typeOfAnswer === "boolean" && (
+        <form id="pkmn-guess-form" onChange={(e) => handleGuess(e)}>
+          <label key={"shiny-true"} htmlFor={"shiny-true"} className="button">
+            <input
+              type="radio"
+              name="shiny"
+              value="shiny-true"
+              id="shiny-true"
+            />
+            True
+          </label>
+          <label key={"shiny-false"} htmlFor={"shiny-false"} className="button">
+            <input
+              type="radio"
+              name="shiny"
+              value="shiny-false"
+              id="shiny-false"
+            />
+            False
+          </label>
+        </form>
+      )}
+      {typeOfAnswer === "text" && (
         <form id="pkmn-guess-form" onChange={(e) => handleGuess(e)}>
           <input
             type="text"

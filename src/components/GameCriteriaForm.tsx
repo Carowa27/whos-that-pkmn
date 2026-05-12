@@ -58,7 +58,10 @@ export const GameCriteriaForm = ({
         `/game/${formState.gameMode}/${formState.generation}/${formState.clueType}/${formState.alternativeType}/`,
       );
     }
-    if (formState.gameMode === "time-attack") {
+    if (
+      formState.gameMode === "time-attack" ||
+      formState.gameMode === "shiny"
+    ) {
       navigate(`/game/${formState.gameMode}/${formState.generation}/`);
     }
   };
@@ -68,7 +71,8 @@ export const GameCriteriaForm = ({
       formState.generation &&
       formState.clueType &&
       formState.alternativeType) ||
-    (formState.gameMode == "time-attack" && formState.generation),
+    (formState.gameMode == "time-attack" && formState.generation) ||
+    (formState.gameMode == "shiny" && formState.generation),
   );
   const generationData = async () => {
     try {
@@ -137,7 +141,6 @@ export const GameCriteriaForm = ({
               value="shiny"
               checked={formState.gameMode === "shiny"}
               onChange={handleChange}
-              disabled
             />
             Am I Shiny?
           </label>
