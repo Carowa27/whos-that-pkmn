@@ -12,6 +12,11 @@ export const PkmnGuessInput = ({
   alternatives,
   handleGuess,
 }: IPkmnGuessProps) => {
+  console.log(typeOfAnswer);
+
+  if (typeOfAnswer === "boolean") {
+    console.log("shiny", alternatives);
+  }
   return (
     <>
       {typeOfAnswer === "multiple" ? (

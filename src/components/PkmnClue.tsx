@@ -8,18 +8,16 @@ interface IPkmnClueProps {
 }
 
 export const PkmnClue = ({ typeOfClue, pkmn, reveal }: IPkmnClueProps) => {
+  console.log("pkmnclue", typeOfClue, pkmn);
+
   if (typeOfClue === "dex") {
     const textTrim = (text: string) => {
       const trimmedText = text.replace(/\f/g, " ").trim().split("\n").join(" ");
       return trimmedText;
     };
     const dexEntry =
-      "dexEntries" in pkmn && pkmn.dexEntries !== null
-        ? pkmn.dexEntries[0].language.name === "en"
-          ? textTrim(pkmn.dexEntries[0].flavor_text)
-          : pkmn.dexEntries[0].language.name === "en"
-            ? textTrim(pkmn.dexEntries[1].flavor_text)
-            : pkmn.dexEntries[2].flavor_text
+      "dexEntry" in pkmn && pkmn.dexEntry !== null
+        ? textTrim(pkmn.dexEntry)
         : "No pokedex entries was found";
     return (
       <p
@@ -28,7 +26,11 @@ export const PkmnClue = ({ typeOfClue, pkmn, reveal }: IPkmnClueProps) => {
       />
     );
   }
-
+  if (typeOfClue === "shiny") {
+    console.log("shiny clue", pkmn);
+    //get img??
+    return <Pkmn pkmn={pkmn} reveal={true} />;
+  }
   return (
     <div id="pkmn-guess-img-wrapper">
       {typeOfClue === "img" && <Pkmn pkmn={pkmn} reveal={reveal} />}
