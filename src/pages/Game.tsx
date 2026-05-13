@@ -288,7 +288,7 @@ export const Game = ({
                 )}
               </>
             )}
-            {gameMode === "shiny" &&
+            {/* {gameMode === "shiny" &&
               correct !== null &&
               gameState.guess !== "" && (
                 <p className="center">
@@ -297,7 +297,7 @@ export const Game = ({
                     ? "I am!"
                     : "I am not!"}
                 </p>
-              )}
+              )} */}
           </div>
           {isLoading && <Loading />}
           {!isLoading && gameMode === "regular" && correct === undefined && (
