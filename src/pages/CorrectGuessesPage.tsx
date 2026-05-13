@@ -1,19 +1,19 @@
 import { Link } from "react-router-dom";
 import { Header } from "../components/Header";
 import { Pkmn } from "../components/Pkmn";
-import type { pkmnWInfo } from "../types/pkmn";
+import type { pkmnData } from "../types/pkmn";
 
 interface ListPageProps {
-  correctGuesses: pkmnWInfo[];
-  setCorrectGuesses: React.Dispatch<React.SetStateAction<pkmnWInfo[]>>;
+  correctGuesses: pkmnData[];
+  setCorrectGuesses: React.Dispatch<React.SetStateAction<pkmnData[]>>;
 }
 
 export const CorrectGuessesPage = ({
   correctGuesses,
   setCorrectGuesses,
 }: ListPageProps) => {
-  const removeGuessFromState = (p: pkmnWInfo) => {
-    setCorrectGuesses((prev: pkmnWInfo[]) =>
+  const removeGuessFromState = (p: pkmnData) => {
+    setCorrectGuesses((prev: pkmnData[]) =>
       prev.filter((pkmn) => pkmn.id !== p.id),
     );
   };
@@ -37,7 +37,7 @@ export const CorrectGuessesPage = ({
         </p>
       ) : (
         <ul id="pkmn-list">
-          {correctGuesses.map((p: pkmnWInfo) => (
+          {correctGuesses.map((p: pkmnData) => (
             <li key={p.id + "-" + p.pkmnName} id="correct-guess-wrapper">
               <Pkmn pkmn={p} reveal={true} />
               <span

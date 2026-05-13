@@ -5,10 +5,6 @@ export interface pkmnFromGen {
 export interface pkmnData {
   id: number;
   pkmnName: string;
-}
-export interface pkmnWInfo {
-  id: number;
-  pkmnName: string;
   dexEntry: string | null;
   sprite: string | null;
 }

@@ -6,7 +6,6 @@ import { PkmnGuessInput } from "../components/PkmnGuessInput";
 import { NewGameBtns } from "../components/NewGameBtns";
 import { Loading } from "../components/Loading";
 
-import type { pkmnData, pkmnWInfo } from "../types/pkmn";
 import type { GameState } from "../types/game";
 import { Header } from "../components/Header";
 import {
@@ -14,10 +13,11 @@ import {
   getPkmnObject,
   getTimeAttackPkmnArr,
 } from "../functions/gameFns";
+import type { pkmnData } from "../types/pkmn";
 
 interface GameProps {
-  setCorrectGuesses: React.Dispatch<React.SetStateAction<pkmnWInfo[]>>;
-  correctGuesses: pkmnWInfo[];
+  setCorrectGuesses: React.Dispatch<React.SetStateAction<pkmnData[]>>;
+  correctGuesses: pkmnData[];
   error: { error: boolean; msg: string };
   setError: React.Dispatch<
     React.SetStateAction<{ error: boolean; msg: string }>
@@ -57,11 +57,7 @@ export const Game = ({
     setIsShiny(() => Math.random() < 0.5);
   };
 
-  const getRandomNumbers = (
-    low: number,
-    high: number,
-    array: (pkmnWInfo | pkmnData)[],
-  ) => {
+  const getRandomNumbers = (low: number, high: number, array: pkmnData[]) => {
     const excludedIds = new Set(
       array.length !== 0 ? array.map((p) => p.id) : [],
     );
@@ -106,7 +102,7 @@ export const Game = ({
         correct = {
           pkmnName: correct.pkmnName,
           id: correct.id,
-          dexEntry: "dexEntry" in correct ? correct.dexEntry : "",
+          dexEntry: correct ? correct.dexEntry : null,
           sprite: isShiny
             ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/${correct.id}.png`
             : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${correct.id}.png`,
@@ -165,7 +161,7 @@ export const Game = ({
       if (e.target.value === correct.pkmnName) {
         setGameState((prev) => ({ ...prev, guess: "correct" }));
         if (gameMode === "regular") {
-          setCorrectGuesses((prev) => [...prev, correct as pkmnWInfo]);
+          setCorrectGuesses((prev) => [...prev, correct]);
         } else {
           setTimeAttackCorrectGuesses((prev) => [...prev, correct as pkmnData]);
         }
@@ -296,7 +292,7 @@ export const Game = ({
               correct !== null &&
               gameState.guess !== "" && (
                 <p className="center">
-                  {"sprite" in correct &&
+                  {correct.sprite !== null &&
                   correct.sprite.includes("shiny") === true
                     ? "I am!"
                     : "I am not!"}
