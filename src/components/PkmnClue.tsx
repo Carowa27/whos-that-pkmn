@@ -1,9 +1,9 @@
-import type { pkmnData, pkmnWInfo } from "../types/pkmn";
+import type { pkmnData } from "../types/pkmn";
 import { Pkmn } from "./Pkmn";
 
 interface IPkmnClueProps {
   typeOfClue: string | undefined;
-  pkmn: pkmnWInfo | pkmnData;
+  pkmn: pkmnData;
   reveal: boolean;
 }
 
@@ -14,12 +14,8 @@ export const PkmnClue = ({ typeOfClue, pkmn, reveal }: IPkmnClueProps) => {
       return trimmedText;
     };
     const dexEntry =
-      "dexEntries" in pkmn && pkmn.dexEntries !== null
-        ? pkmn.dexEntries[0].language.name === "en"
-          ? textTrim(pkmn.dexEntries[0].flavor_text)
-          : pkmn.dexEntries[0].language.name === "en"
-            ? textTrim(pkmn.dexEntries[1].flavor_text)
-            : pkmn.dexEntries[2].flavor_text
+      "dexEntry" in pkmn && pkmn.dexEntry !== null
+        ? textTrim(pkmn.dexEntry)
         : "No pokedex entries was found";
     return (
       <p
@@ -28,7 +24,18 @@ export const PkmnClue = ({ typeOfClue, pkmn, reveal }: IPkmnClueProps) => {
       />
     );
   }
-
+  if (typeOfClue === "shiny" || typeOfClue === "not-shiny") {
+    const shinyPkmn = {
+      id: pkmn.id,
+      pkmnName: pkmn.pkmnName,
+      sprite:
+        typeOfClue === "shiny"
+          ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/${pkmn.id}.png`
+          : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pkmn.id}.png`,
+      dexEntry: null,
+    };
+    return <Pkmn pkmn={shinyPkmn} reveal={true} />;
+  }
   return (
     <div id="pkmn-guess-img-wrapper">
       {typeOfClue === "img" && <Pkmn pkmn={pkmn} reveal={reveal} />}

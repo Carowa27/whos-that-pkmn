@@ -1,4 +1,9 @@
-import type { pkmnData, pkmnFromGen, pkmnWInfo } from "../types/pkmn";
+import type {
+  pkmnData,
+  pkmnFromGen,
+  pkmnResponseWDex,
+  pkmnResponseWSprites,
+} from "../types/pkmn";
 
 import {
   getPkmnFromGeneration,
@@ -34,18 +39,31 @@ export const getTimeAttackPkmnArr = async (gen: number) => {
 };
 
 export const getPkmnObject = async (id: number, pkmnArr: pkmnData[] | null) => {
-  let pkmnWDex: pkmnWInfo;
-  let pkmnWSprites: pkmnWInfo;
-  let pkmnObject: pkmnWInfo | pkmnData;
+  let pkmnWDex: pkmnResponseWDex;
+  let pkmnWSprites: pkmnResponseWSprites;
+  let pkmnObject: pkmnData;
 
   if (pkmnArr === null) {
     pkmnWSprites = await getSpecificPkmn(id);
     pkmnWDex = await getSpecificPkmnDexEntry(id);
+
     pkmnObject = {
       id: id,
       pkmnName: pkmnWSprites.pkmnName,
-      dexEntries: pkmnWDex.dexEntries,
-      sprites: pkmnWSprites.sprites,
+      dexEntry:
+        pkmnWDex.dexEntries !== null
+          ? pkmnWDex.dexEntries[0].language.name === "en"
+            ? pkmnWDex.dexEntries[0].flavor_text
+            : pkmnWDex.dexEntries[0].language.name === "en"
+              ? pkmnWDex.dexEntries[1].flavor_text
+              : pkmnWDex.dexEntries[2].flavor_text
+          : null,
+      sprite:
+        pkmnWSprites.sprites != null
+          ? (pkmnWSprites.sprites.other["official-artwork"].front_default ??
+            pkmnWSprites.sprites.other.home.front_default ??
+            null)
+          : null,
     };
     return pkmnObject;
   }
@@ -58,5 +76,7 @@ export const getPkmnObject = async (id: number, pkmnArr: pkmnData[] | null) => {
   return {
     id: pkmnFromArr.id,
     pkmnName: pkmnFromArr.pkmnName,
+    dexEntry: null,
+    sprite: null,
   };
 };

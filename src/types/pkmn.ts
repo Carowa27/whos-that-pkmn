@@ -5,12 +5,18 @@ export interface pkmnFromGen {
 export interface pkmnData {
   id: number;
   pkmnName: string;
+  dexEntry: string | null;
+  sprite: string | null;
 }
-export interface pkmnWInfo {
+export interface pkmnResponseWSprites {
+  id: number;
+  pkmnName: string;
+  sprites: PokemonSprites | null;
+}
+export interface pkmnResponseWDex {
   id: number;
   pkmnName: string;
   dexEntries: FlavorTextEntry[] | null;
-  sprites: PokemonSprites | null;
 }
 interface FlavorTextEntry {
   flavor_text: string;
