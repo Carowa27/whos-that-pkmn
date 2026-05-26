@@ -2,13 +2,14 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { Nav } from "./components/Nav";
 import { Game } from "./pages/Game";
-import { PkmnList } from "./pages/PkmnList";
+import { CorrectGuessesPage } from "./pages/CorrectGuessesPage";
 import { Home } from "./pages/Home";
 import { useState } from "react";
-import type { pkmn } from "./types/pkmn";
+import type { pkmnData } from "./types/pkmn";
+import { DisclaimerInfo } from "./pages/DisclaimerInfo";
 
 function App() {
-  const [correctGuesses, setCorrectGuesses] = useState<pkmn[]>([]);
+  const [correctGuesses, setCorrectGuesses] = useState<pkmnData[]>([]);
   const [error, setError] = useState<{ error: boolean; msg: string }>({
     error: false,
     msg: "",
@@ -24,7 +25,18 @@ function App() {
             element={<Home error={error} setError={setError} />}
           />
           <Route
-            path="/game/:gen/:clueType/:alternativeType"
+            path="/game/:gameMode/:gen/:clueType/:alternativeType"
+            element={
+              <Game
+                setCorrectGuesses={setCorrectGuesses}
+                correctGuesses={correctGuesses}
+                error={error}
+                setError={setError}
+              />
+            }
+          />
+          <Route
+            path="/game/:gameMode/:gen/"
             element={
               <Game
                 setCorrectGuesses={setCorrectGuesses}
@@ -37,12 +49,13 @@ function App() {
           <Route
             path="/correct-guesses"
             element={
-              <PkmnList
+              <CorrectGuessesPage
                 correctGuesses={correctGuesses}
                 setCorrectGuesses={setCorrectGuesses}
               />
             }
           />
+          <Route path="/disclaimer-info" element={<DisclaimerInfo />} />
         </Routes>
       </BrowserRouter>
     </div>

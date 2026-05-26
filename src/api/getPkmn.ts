@@ -1,11 +1,5 @@
 import { apiClient } from "./axiosConfig";
 
-// get specific pkmn
-// https://pokeapi.co/api/v2/pokemon/{id}
-
-// get pkmn by gen
-//https://pokeapi.co/api/v2/generation/2
-
 export const getSpecificPkmn = async (id: number) => {
   try {
     const response = await apiClient.get(`/pokemon/${id}`);

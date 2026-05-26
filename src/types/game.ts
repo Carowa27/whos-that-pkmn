@@ -1,8 +1,8 @@
-import type { pkmn } from "./pkmn";
+import type { pkmnData } from "./pkmn";
 
 export interface GameState {
-  alternatives: pkmn[];
-  correct: pkmn | null;
+  alternatives: pkmnData[];
+  correct: pkmnData | null;
   guess: "wrong" | "correct" | "";
   reveal: boolean;
 }

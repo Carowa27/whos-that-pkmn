@@ -110,6 +110,9 @@ h2 {
     font-size: 20px;
   }
 }
+h5 {
+  margin: 0;
+}
 p {
   margin: 0;
 }
@@ -310,9 +313,21 @@ input[type="radio"] {
 #game-criteria-form h4 {
   margin: 0;
 }
+#game-mode-section {
+  display: flex;
+  flex-wrap: wrap;
+}
+.w-100 {
+  width: 100%;
+}
+#gen-section select {
+  width: 100%;
+}
 #clue-section {
   display: flex;
-  justify-content: space-evenly;
+}
+.button {
+  flex-grow: 2;
 }
 #answer-section {
   display: flex;
@@ -403,4 +418,16 @@ input[type="radio"] {
 
 .center {
   text-align: center;
+}
+#time-attack-info-section {
+  display: flex;
+  justify-content: space-evenly;
+  padding-bottom: 1rem;
+}
+.project-disclaimer {
+  margin-top: 55.2px;
+}
+#disclaimer-icon {
+  font-size: large;
+  padding: 0.5rem;
 }
